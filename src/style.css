@@ -1,0 +1,19 @@
+.swiper-button-next:after, .swiper-button-prev:after {
+    display: none;
+}
+
+.swiper-button-next, .swiper-button-prev {
+    text-decoration: none;
+    color: inherit;
+    width: 1rem !important;
+}
+
+.swiper-button-prev {
+    left: var(--swiper-navigation-sides-offset, -4.2rem);
+    right: auto;
+}
+
+.swiper-button-next {
+    right: var(--swiper-navigation-sides-offset, -4.2rem);
+    left: auto;
+}
