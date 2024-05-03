@@ -1,5 +1,5 @@
 {
-  "name": "@vaaal/ope-template",
+  "name": "vv-ope-template",
   "version": "0.0.0",
   "description": "OPE Template project made by Vaaal using Finsweet developer starter.",
   "homepage": "https://github.com/Vaaaaal/ope-template#readme",
@@ -53,6 +53,7 @@
   },
   "dependencies": {
     "@finsweet/ts-utils": "^0.40.0",
+    "gsap": "^3.12.5",
     "swiper": "^11.1.1"
   },
   "engines": {

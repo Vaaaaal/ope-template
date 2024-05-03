@@ -4,27 +4,18 @@ import 'swiper/css/autoplay';
 //Custom imports CSS
 import './style.css';
 
-import Swiper from 'swiper';
-import { Navigation } from 'swiper/modules';
-
 // Custom imports JS
+import { initAnimations } from '$utils/animations';
 import { greetUser } from '$utils/greet';
+import { initPopup } from '$utils/popup';
+import { initSwiper } from '$utils/swiper';
 
 window.Webflow ||= [];
 window.Webflow.push(() => {
   const name = 'Vaaal';
   greetUser(name);
 
-  new Swiper('.swiper.is-testimonials', {
-    slidesPerView: 1,
-    loop: true,
-
-    modules: [Navigation],
-
-    // Navigation arrows
-    navigation: {
-      nextEl: '.swiper-button-next',
-      prevEl: '.swiper-button-prev',
-    },
-  });
+  initSwiper();
+  initAnimations();
+  initPopup();
 });
