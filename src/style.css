@@ -1,3 +1,9 @@
+/* Hero */
+/* .hero_heading_gif {
+    opacity: 0;
+} */
+
+/* Swiper */
 .swiper-button-next:after, .swiper-button-prev:after {
     display: none;
 }
