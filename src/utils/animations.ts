@@ -2,8 +2,9 @@ import gsap from 'gsap';
 import Flip from 'gsap/Flip';
 import ScrollTo from 'gsap/ScrollToPlugin';
 import ScrollTrigger from 'gsap/ScrollTrigger';
+import { SplitText } from 'gsap/SplitText';
 
-gsap.registerPlugin(ScrollTrigger, Flip, ScrollTo);
+gsap.registerPlugin(ScrollTrigger, Flip, ScrollTo, SplitText);
 
 export const initAnimations = () => {
   // Création d'un objet MatchMedia qui permet de gérer les animations avec le responsive
@@ -106,18 +107,38 @@ export const initAnimations = () => {
     }, 4000);
 
     // Animation d'arrivée pour la section hero
-    // const heroTween = gsap.timeline();
-    // heroTween
-    //   //   .to('.hero_heading', {
-    //   //     opacity: 1,
-    //   //     duration: 0.4,
-    //   //     ease: 'power2.out',
-    //   //   })
-    //   .to('.hero_heading_gif', {
-    //     opacity: 1,
-    //     duration: 0.4,
-    //     ease: 'power2.out',
-    //   });
+    const heroContentText = new SplitText('.hero_content_text', {
+      type: 'lines, words',
+      linesClass: 'line',
+      wordsClass: 'word',
+    });
+    const heroTween = gsap.timeline();
+    heroTween
+      .to(['.hero_heading', '.hero_heading_gif'], {
+        opacity: 1,
+        duration: 0.6,
+        ease: 'power2.out',
+      })
+      .to(
+        heroContentText.words,
+        {
+          y: '0%',
+          duration: 0.6,
+          ease: 'power2.out',
+        },
+        '-=0.3'
+      )
+      .fromTo(
+        '.hero_content_arrow',
+        { xPercent: -150 },
+        {
+          xPercent: 0,
+          scale: 1,
+          duration: 1.5,
+          ease: 'power2.inOut',
+        },
+        '-=0.8'
+      );
 
     // Création du ScrollTrigger pour la section "bénéfices"
     ScrollTrigger.create({
@@ -129,6 +150,210 @@ export const initAnimations = () => {
       horizontal: true,
       onEnter: initFirstBenefitsAnimation,
     });
+
+    // Animation de la section "testimonial_first" avec Lottie
+    gsap.set('.testimonial_lottie_house', { scale: 0, yPercent: 70 });
+    const testimonialFirstLottieTween = gsap.timeline({
+      scrollTrigger: {
+        containerAnimation: scrollTween,
+        trigger: '.testimonial_lottie_house',
+        start: 'left 75%',
+        once: true,
+        horizontal: true,
+      },
+    });
+    testimonialFirstLottieTween.to('.testimonial_lottie_house', {
+      scale: 1,
+      yPercent: 0,
+      duration: 0.8,
+      ease: 'power2.inOut',
+    });
+
+    // Animation du reste de la section "testimonial_first"
+    const testimonialFirstText = new SplitText('.is-text-first-testimonial', {
+      type: 'lines, words',
+      linesClass: 'line',
+      wordsClass: 'word',
+    });
+    gsap.set('.testimonial_first_infos p', { xPercent: -100 });
+    const testimonialFirstTween = gsap.timeline({
+      scrollTrigger: {
+        containerAnimation: scrollTween,
+        trigger: '.testimonial_first_wrapper',
+        start: 'left 60%',
+        once: true,
+        horizontal: true,
+      },
+    });
+    gsap.to('.testimonial_lottie_bg', {
+      opacity: 1,
+      duration: 0.4,
+    });
+    testimonialFirstTween
+      .to('.testimonial_first_image', {
+        scale: 1,
+        duration: 1,
+        ease: 'elastic.out(1, 0.7)',
+      })
+      .to(
+        '.testimonial_first_infos p',
+        {
+          xPercent: 0,
+          duration: 0.6,
+          ease: 'power2.out',
+        },
+        '<+=0.1'
+      )
+      .to(
+        testimonialFirstText.words,
+        {
+          y: '0%',
+          duration: 0.6,
+          ease: 'power2.out',
+        },
+        '-=0.2'
+      );
+
+    // Animation de la section "services"
+    gsap.set('.services_item_bg', { yPercent: -50, xPercent: -50 });
+    const serviceItemTween = gsap.timeline({
+      scrollTrigger: {
+        containerAnimation: scrollTween,
+        trigger: '.section_services',
+        start: 'left 45%',
+        once: true,
+        horizontal: true,
+      },
+    });
+    serviceItemTween
+      .to('.services_item_bg', {
+        scale: 1.35,
+        duration: 0.8,
+        stagger: 0.15,
+        ease: 'elastic.out(1, 0.7)',
+      })
+      .to(
+        '.services_item_text',
+        {
+          opacity: 1,
+          duration: 0.4,
+          ease: 'power2.out',
+        },
+        '-=0.5'
+      );
+
+    // Animation de la section "process"
+    const processTween = gsap.timeline({
+      scrollTrigger: {
+        containerAnimation: scrollTween,
+        trigger: '.process_content',
+        start: 'left 50%',
+        horizontal: true,
+        once: true,
+      },
+    });
+    gsap.utils.toArray('.process_item_wrapper').forEach((el) => {
+      const split = new SplitText($(el).find('.process_item_title'), {
+        type: 'lines, words',
+        linesClass: 'line',
+        wordsClass: 'word',
+      });
+
+      processTween
+        .to(el, {
+          scale: 1,
+          duration: 0.4,
+          ease: 'power2.out',
+        })
+        .to(
+          split.words,
+          {
+            y: 0,
+            duration: 0.4,
+            ease: 'power2.out',
+          },
+          '-=0.05'
+        )
+        .to(
+          $(el).find('.process_item'),
+          {
+            opacity: 1,
+            duration: 0.4,
+            stagger: 0.2,
+            ease: 'power2.out',
+          },
+          '<'
+        )
+        .to(
+          $(el).find('.process_item_number'),
+          {
+            opacity: 1,
+            duration: 0.3,
+            ease: 'power2.out',
+          },
+          '<'
+        )
+        .to(
+          $(el).find('.process_decoration_image'),
+          {
+            opacity: 1,
+            duration: 0.3,
+            stagger: 0.2,
+            ease: 'power2.out',
+          },
+          '<'
+        );
+    });
+
+    // Animation de la section "team"
+    gsap.set('.services_item_bg', { yPercent: -50 });
+    const teamTitle = new SplitText('.team_title', {
+      type: 'lines, words',
+      linesClass: 'line',
+      wordsClass: 'word',
+    });
+    const teamTween = gsap.timeline({
+      scrollTrigger: {
+        containerAnimation: scrollTween,
+        trigger: '.section_team',
+        start: 'left 30%',
+        once: true,
+        horizontal: true,
+      },
+    });
+    teamTween
+      .to(teamTitle.words, {
+        y: 0,
+        duration: 0.5,
+        ease: 'power2.out',
+      })
+      .to('.team_arrow', {
+        scale: 1,
+        opacity: 1,
+        yPercent: 0,
+        duration: 0.8,
+        ease: 'power2.out',
+      })
+      .to(
+        '.team_item_photo',
+        {
+          scale: 1,
+          duration: 0.6,
+          stagger: 0.2,
+          ease: 'elastic.out(1, 0.7)',
+        },
+        '<+=0.2'
+      )
+      .to(
+        '.team_item_name',
+        {
+          opacity: 1,
+          duration: 0.4,
+          stagger: 0.2,
+          ease: 'power2.out',
+        },
+        '<+=0.2'
+      );
 
     setHorizontalScrollHeight();
 

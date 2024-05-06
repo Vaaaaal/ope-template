@@ -11,9 +11,12 @@ importers:
       '@finsweet/ts-utils':
         specifier: ^0.40.0
         version: 0.40.0
+      '@googlemaps/js-api-loader':
+        specifier: ^1.16.6
+        version: 1.16.6
       gsap:
-        specifier: ^3.12.5
-        version: 3.12.5
+        specifier: file:gsap-bonus.tgz
+        version: file:gsap-bonus.tgz
       swiper:
         specifier: ^11.1.1
         version: 11.1.1
@@ -313,6 +316,9 @@ packages:
     resolution: {integrity: sha512-ZlTFcUDbklOrL8f+hiGeoRKMvqLOQHnUxFT8NYR43+BPb0Zed5xHt3OijxLDOmEQw8CwtHSW6oRPnJA/DJEByQ==}
     peerDependencies:
       typescript: ^5.0.0
+
+  '@googlemaps/js-api-loader@1.16.6':
+    resolution: {integrity: sha512-V8p5W9DbPQx74jWUmyYJOerhiB4C+MHekaO0ZRmc6lrOYrvY7+syLhzOWpp55kqSPeNb+qbC2h8i69aLIX6krQ==}
 
   '@humanwhocodes/config-array@0.11.14':
     resolution: {integrity: sha512-3T8LkOmg45BV5FICb15QQMsyUSWrQ8AygVfC7ZG32zOalnqrilm018ZVCw0eapXux8FtA33q8PSRSstjee3jSg==}
@@ -874,8 +880,9 @@ packages:
   graphemer@1.4.0:
     resolution: {integrity: sha512-EtKwoO6kxCL9WO5xipiHTZlSzBm7WLT627TqC/uVRd0HKmq8NXyebnNYxDoBi7wt8eTWrUrKXCOVaFq9x1kgag==}
 
-  gsap@3.12.5:
-    resolution: {integrity: sha512-srBfnk4n+Oe/ZnMIOXt3gT605BX9x5+rh/prT2F1SsNJsU1XuMiP0E2aptW481OnonOGACZWBqseH5Z7csHxhQ==}
+  gsap@file:gsap-bonus.tgz:
+    resolution: {integrity: sha512-Q/GR6Bq13T9ulCSt3bIxHtYu5NbeBZwTi9DykpMFGsF1xUNmG5zNHr/B7TtECURU+N9JSFEPoFj9o77gXfVSRw==, tarball: file:gsap-bonus.tgz}
+    version: 3.12.5
 
   hard-rejection@2.1.0:
     resolution: {integrity: sha512-VIZB+ibDhx7ObhAe7OVtoEbuP4h/MuOTHJ+J8h/eBXotJYl0fBgR72xDFCKgIh22OJZIOVNxBMWuhAr10r8HdA==}
@@ -1922,6 +1929,10 @@ snapshots:
     dependencies:
       typescript: 5.3.3
 
+  '@googlemaps/js-api-loader@1.16.6':
+    dependencies:
+      fast-deep-equal: 3.1.3
+
   '@humanwhocodes/config-array@0.11.14':
     dependencies:
       '@humanwhocodes/object-schema': 2.0.2
@@ -2627,7 +2638,7 @@ snapshots:
 
   graphemer@1.4.0: {}
 
-  gsap@3.12.5: {}
+  gsap@file:gsap-bonus.tgz: {}
 
   hard-rejection@2.1.0: {}
 

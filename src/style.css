@@ -1,9 +1,108 @@
-/* Hero */
-/* .hero_heading_gif {
+/* 
+    -- Hero --
+*/
+.hero_heading {
     opacity: 0;
-} */
+}
 
-/* Swiper */
+.hero_heading_gif {
+    opacity: 0;
+}
+
+.hero_content_text .line {
+    overflow: hidden;
+}
+
+.hero_content_text .word {
+    transform: translateY(100%);
+}
+
+.hero_content_arrow {
+    transform: scale(0.5);
+}
+
+/* 
+    -- Testimonial first --
+*/
+.testimonial_lottie_bg {
+    opacity: 0;
+}
+
+.testimonial_first_image {
+    scale: 0;
+}
+
+.testimonial_first_infos {
+    overflow: hidden;
+}
+
+.is-text-first-testimonial .line {
+    overflow: hidden;
+}
+
+.is-text-first-testimonial .word {
+    transform: translateY(100%);
+}
+
+/* 
+    -- Services --
+*/
+.services_item_bg {
+    scale: 0;
+}
+
+.services_item_text {
+    opacity: 0;
+}
+
+/* 
+    -- Process --
+*/
+.process_item_wrapper {
+    transform: scaleY(0);
+}
+
+.process_item_title .line {
+    overflow: hidden;
+}
+
+.process_item_title .word {
+    transform: translateY(100%);
+}
+
+.process_item, 
+.process_item_number, 
+.process_decoration_image {
+    opacity: 0;
+}
+
+/* 
+    -- Team --
+*/
+.team_title .line {
+    overflow: hidden;
+}
+
+.team_title .word {
+    transform: translateY(100%);
+}
+
+.team_arrow {
+    transform: scale(0.6);
+    opacity: 0;
+}
+
+.team_item_photo {
+    scale: 0;
+}
+
+.team_item_name {
+    opacity: 0;
+}
+
+/* 
+    -- Swiper --
+*/
 .swiper-button-next:after, .swiper-button-prev:after {
     display: none;
 }
