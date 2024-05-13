@@ -409,11 +409,15 @@ export const initAnimations = () => {
         },
       });
     });
+
+    // Adaptation de la hauteur du scroll horizontal à chaque redimensionnement
+    window.addEventListener('resize', () => {
+      setHorizontalScrollHeight();
+    });
   });
 
-  // Adaptation de la hauteur du scroll horizontal à chaque redimensionnement
-  window.addEventListener('resize', () => {
-    setHorizontalScrollHeight();
+  mm.add('screen and (max-width: 991px)', () => {
+    // Animation mobile ici
   });
 };
 
