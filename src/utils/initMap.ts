@@ -7,18 +7,18 @@ export const initMap = () => {
   });
 
   loader.load().then(async () => {
-    // const src = url_de_la_source_du_fichier_kml;
+    const src = 'https://www.vivantes.fr/KML-OP/contour_plombieres.kml';
 
     const { Map } = (await google.maps.importLibrary('maps')) as google.maps.MapsLibrary;
     const map = new Map(document.querySelector('.map_item_wrapper') as HTMLElement, {
-      center: { lat: 47.97101541036518, lng: 6.438309914386212 },
+      center: { lat: 47.97101541036518, lng: 6.438309914386212 }, // Changer les coordonnées pour celles voulues
       zoom: 13,
     });
 
-    // new google.maps.KmlLayer(src, {
-    //   suppressInfoWindows: true,
-    //   preserveViewport: false,
-    //   map: map,
-    // });
+    new google.maps.KmlLayer(src, {
+      suppressInfoWindows: true,
+      preserveViewport: false,
+      map: map,
+    });
   });
 };

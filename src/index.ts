@@ -8,7 +8,7 @@ import './style.css';
 import { initAnimations } from '$utils/animations';
 import { greetUser } from '$utils/greet';
 import { initMap } from '$utils/initMap';
-import { initPopup } from '$utils/popup';
+import { initPopups } from '$utils/popup';
 import { initSwiper } from '$utils/swiper';
 
 window.Webflow ||= [];
@@ -19,5 +19,5 @@ window.Webflow.push(() => {
   initMap();
   initSwiper();
   initAnimations();
-  initPopup();
+  initPopups();
 });

@@ -56,7 +56,7 @@ export const initAnimations = () => {
             '.nudge_effect_item:nth-child(1)',
             { x: '120%' },
             {
-              x: '-50%',
+              x: '-200%',
               duration: nudge.duration,
               ease: 'power2.out',
             }
@@ -67,7 +67,7 @@ export const initAnimations = () => {
             ease: 'power2.in',
           })
           .to('.nudge_effect_item:nth-child(1)', {
-            x: '-50%',
+            x: '-200%',
             duration: nudge.duration,
             ease: 'power2.out',
           })
@@ -83,7 +83,7 @@ export const initAnimations = () => {
             '.nudge_effect_item:nth-child(2)',
             { x: '120%' },
             {
-              x: '-50%',
+              x: '-200%',
               duration: nudge.duration,
               ease: 'power2.out',
             }
@@ -94,7 +94,7 @@ export const initAnimations = () => {
             ease: 'power2.in',
           })
           .to('.nudge_effect_item:nth-child(2)', {
-            x: '-50%',
+            x: '-200%',
             duration: nudge.duration,
             ease: 'power2.out',
           })
@@ -104,7 +104,7 @@ export const initAnimations = () => {
             ease: 'power2.in',
           });
       }
-    }, 4000);
+    }, 3000);
 
     // Animation d'arrivée pour la section hero
     const heroContentText = new SplitText('.hero_content_text', {
