@@ -6,7 +6,7 @@ import { SplitText } from 'gsap/SplitText';
 
 gsap.registerPlugin(ScrollTrigger, Flip, ScrollTo, SplitText);
 
-export const initAnimations = () => {
+export const initAnimations = (rubik: string) => {
   // Création d'un objet MatchMedia qui permet de gérer les animations avec le responsive
   const mm = gsap.matchMedia();
 
@@ -148,7 +148,7 @@ export const initAnimations = () => {
       end: 'right 50%',
       once: true,
       horizontal: true,
-      onEnter: initFirstBenefitsAnimation,
+      onEnter: () => initFirstBenefitsAnimation(rubik),
     });
 
     // Animation de la section "testimonial_first" avec Lottie
@@ -215,7 +215,9 @@ export const initAnimations = () => {
       );
 
     // Animation de la section "services"
-    gsap.set('.services_item_bg', { yPercent: -50, xPercent: -50 });
+    gsap.utils.toArray('.services_item_bg').forEach((el) => {
+      gsap.set(el, { yPercent: -50, xPercent: -50, scale: $(el).attr('scale') });
+    });
     const serviceItemTween = gsap.timeline({
       scrollTrigger: {
         containerAnimation: scrollTween,
@@ -226,8 +228,8 @@ export const initAnimations = () => {
       },
     });
     serviceItemTween
-      .to('.services_item_bg', {
-        scale: 1.35,
+      .from('.services_item_bg', {
+        scale: 0,
         duration: 0.8,
         stagger: 0.15,
         ease: 'elastic.out(1, 0.7)',
@@ -306,7 +308,6 @@ export const initAnimations = () => {
     });
 
     // Animation de la section "team"
-    gsap.set('.services_item_bg', { yPercent: -50 });
     const teamTitle = new SplitText('.team_title', {
       type: 'lines, words',
       linesClass: 'line',
@@ -455,64 +456,118 @@ const rubiks = {
 };
 
 // Première partie de l'animation "rubiks" des bénéfices
-function initFirstBenefitsAnimation() {
-  const benefitWrapper = Flip.getState('.benefits_item-wrapper');
-  $('.benefits_item-wrapper:nth-child(1)').css('grid-area', '1/1/2/2');
-  $('.benefits_item-wrapper:nth-child(2)').css('grid-area', '1/2/2/3');
-  $('.benefits_item-wrapper:nth-child(6)').css('grid-area', '1/3/2/4');
-  $('.benefits_item-wrapper:nth-child(7)').css('grid-area', '2/3/3/4');
-  $('.benefits_item-wrapper:nth-child(8)').css('grid-area', '2/4/3/5');
-  $('.benefits_item-wrapper:nth-child(9)').css('grid-area', '2/5/3/6');
-  $('.benefits_item-wrapper:nth-child(10)').css('grid-area', '3/2/3/3');
-  $('.benefits_item-wrapper:nth-child(11)').css('grid-area', '3/3/4/4');
-  $('.benefits_item-wrapper:nth-child(12)').css('grid-area', '3/4/4/5');
-  $('.benefits_item-wrapper:nth-child(13)').css('grid-area', '3/5/4/6');
-  $('.benefits_item-wrapper:nth-child(14)').css('grid-area', '3/6/4/7');
+function initFirstBenefitsAnimation(rubik: string) {
+  if (rubik === 'plombieres') {
+    const benefitWrapper = Flip.getState('.benefits_item-wrapper');
+    $('.benefits_item-wrapper:nth-child(1)').css('grid-area', '1/1/2/2');
+    $('.benefits_item-wrapper:nth-child(2)').css('grid-area', '1/2/2/3');
+    $('.benefits_item-wrapper:nth-child(6)').css('grid-area', '1/3/2/4');
+    $('.benefits_item-wrapper:nth-child(7)').css('grid-area', '2/3/3/4');
+    $('.benefits_item-wrapper:nth-child(8)').css('grid-area', '2/4/3/5');
+    $('.benefits_item-wrapper:nth-child(9)').css('grid-area', '2/5/3/6');
+    $('.benefits_item-wrapper:nth-child(10)').css('grid-area', '3/2/3/3');
+    $('.benefits_item-wrapper:nth-child(11)').css('grid-area', '3/3/4/4');
+    $('.benefits_item-wrapper:nth-child(12)').css('grid-area', '3/4/4/5');
+    $('.benefits_item-wrapper:nth-child(13)').css('grid-area', '3/5/4/6');
+    $('.benefits_item-wrapper:nth-child(14)').css('grid-area', '3/6/4/7');
 
-  Flip.from(benefitWrapper, {
-    duration: rubiks.duration,
-    ease: 'power2.out',
-    absolute: true,
-    onComplete: initSecondBenefitsAnimation,
-  });
+    Flip.from(benefitWrapper, {
+      duration: rubiks.duration,
+      ease: 'power2.out',
+      absolute: true,
+      onComplete: () => initSecondBenefitsAnimation(rubik),
+    });
+  } else if (rubik === 'nancy') {
+    const benefitWrapper = Flip.getState('.benefits_item-wrapper');
+    $('.benefits_item-wrapper:nth-child(1)').css('grid-area', '2/1/2/1');
+    $('.benefits_item-wrapper:nth-child(2)').css('grid-area', '3/1/3/1');
+    $('.benefits_item-wrapper:nth-child(3)').css('grid-area', '3/3/3/3');
+    $('.benefits_item-wrapper:nth-child(4)').css('grid-area', '3/2/3/2');
+    $('.benefits_item-wrapper:nth-child(5)').css('grid-area', '3/4/3/4');
+
+    Flip.from(benefitWrapper, {
+      duration: rubiks.duration,
+      ease: 'power2.out',
+      absolute: true,
+      onComplete: () => initSecondBenefitsAnimation(rubik),
+    });
+  }
 }
 
 // Deuxième partie de l'animation "rubiks" des bénéfices
-function initSecondBenefitsAnimation() {
-  const benefitWrapper = Flip.getState('.benefits_item-wrapper');
-  $('.benefits_item-wrapper:nth-child(1)').css('grid-area', '2/1/3/2');
-  $('.benefits_item-wrapper:nth-child(4)').css('grid-area', '1/6/2/7');
-  $('.benefits_item-wrapper:nth-child(8)').css('grid-area', '2/5/3/6');
-  $('.benefits_item-wrapper:nth-child(9)').css('grid-area', '1/5/2/6');
-  $('.benefits_item-wrapper:nth-child(12)').css('grid-area', '2/4/3/5');
-  $('.benefits_item-wrapper:nth-child(13)').css('grid-area', '3/4/4/5');
+function initSecondBenefitsAnimation(rubik: string) {
+  if (rubik === 'plombieres') {
+    const benefitWrapper = Flip.getState('.benefits_item-wrapper');
+    $('.benefits_item-wrapper:nth-child(1)').css('grid-area', '2/1/3/2');
+    $('.benefits_item-wrapper:nth-child(4)').css('grid-area', '1/6/2/7');
+    $('.benefits_item-wrapper:nth-child(8)').css('grid-area', '2/5/3/6');
+    $('.benefits_item-wrapper:nth-child(9)').css('grid-area', '1/5/2/6');
+    $('.benefits_item-wrapper:nth-child(12)').css('grid-area', '2/4/3/5');
+    $('.benefits_item-wrapper:nth-child(13)').css('grid-area', '3/4/4/5');
+    $('.benefits_item-wrapper:nth-child(14)').css('grid-area', '3/5/4/6');
 
-  Flip.from(benefitWrapper, {
-    duration: rubiks.duration,
-    ease: 'power2.out',
-    absolute: true,
-    onComplete: initThirdBenefitsAnimation,
-  });
+    Flip.from(benefitWrapper, {
+      duration: rubiks.duration,
+      ease: 'power2.out',
+      absolute: true,
+      onComplete: () => initThirdBenefitsAnimation(rubik),
+    });
+  } else if (rubik === 'nancy') {
+    const benefitWrapper = Flip.getState('.benefits_item-wrapper');
+    $('.benefits_item-wrapper:nth-child(1)').css('grid-area', '1/1/1/1');
+    $('.benefits_item-wrapper:nth-child(2)').css('grid-area', '2/1/2/1');
+    $('.benefits_item-wrapper:nth-child(3)').css('grid-area', '3/2/3/2');
+    $('.benefits_item-wrapper:nth-child(4)').css('grid-area', '2/2/2/2');
+    $('.benefits_item-wrapper:nth-child(5)').css('grid-area', '3/3/3/3');
+    $('.benefits_item-wrapper:nth-child(6)').css('grid-area', '2/3/2/3');
+    $('.benefits_item-wrapper:nth-child(7)').css('grid-area', '1/2/1/2');
+    $('.benefits_item-wrapper:nth-child(8)').css('grid-area', '1/3/1/3');
+
+    Flip.from(benefitWrapper, {
+      duration: rubiks.duration,
+      ease: 'power2.out',
+      absolute: true,
+      onComplete: () => initThirdBenefitsAnimation(rubik),
+    });
+  }
 }
 
 // Troisième partie de l'animation "rubiks" des bénéfices
-function initThirdBenefitsAnimation() {
-  const benefitWrapper = Flip.getState('.benefits_item-wrapper');
-  $('.benefits_item-wrapper:nth-child(1)').css('grid-area', '2/2/3/3');
-  $('.benefits_item-wrapper:nth-child(3)').css('grid-area', '2/4/3/5');
-  $('.benefits_item-wrapper:nth-child(4)').css('grid-area', '1/5/2/6');
-  $('.benefits_item-wrapper:nth-child(5)').css('grid-area', '3/2/4/3');
-  $('.benefits_item-wrapper:nth-child(8)').css('grid-area', '2/6/3/7');
-  $('.benefits_item-wrapper:nth-child(9)').css('grid-area', '1/4/2/5');
-  $('.benefits_item-wrapper:nth-child(10)').css('grid-area', '3/1/4/2');
-  $('.benefits_item-wrapper:nth-child(12)').css('grid-area', '2/5/3/6');
-  $('.benefits_item-wrapper:nth-child(14)').css('grid-area', '3/5/4/6');
+function initThirdBenefitsAnimation(rubik: string) {
+  if (rubik === 'plombieres') {
+    const benefitWrapper = Flip.getState('.benefits_item-wrapper');
+    $('.benefits_item-wrapper:nth-child(1)').css('grid-area', '2/2/3/3');
+    $('.benefits_item-wrapper:nth-child(3)').css('grid-area', '2/4/3/5');
+    $('.benefits_item-wrapper:nth-child(4)').css('grid-area', '1/5/2/6');
+    $('.benefits_item-wrapper:nth-child(5)').css('grid-area', '3/2/4/3');
+    $('.benefits_item-wrapper:nth-child(8)').css('grid-area', '2/6/3/7');
+    $('.benefits_item-wrapper:nth-child(9)').css('grid-area', '1/4/2/5');
+    $('.benefits_item-wrapper:nth-child(10)').css('grid-area', '3/1/4/2');
+    $('.benefits_item-wrapper:nth-child(12)').css('grid-area', '2/5/3/6');
+    $('.benefits_item-wrapper:nth-child(14)').css('grid-area', '3/5/4/6');
 
-  Flip.from(benefitWrapper, {
-    duration: rubiks.duration,
-    ease: 'power2.out',
-    absolute: true,
-  });
+    Flip.from(benefitWrapper, {
+      duration: rubiks.duration,
+      ease: 'power2.out',
+      absolute: true,
+    });
+  } else if (rubik === 'nancy') {
+    const benefitWrapper = Flip.getState('.benefits_item-wrapper');
+    $('.benefits_item-wrapper:nth-child(1)').css('grid-area', '2/1/2/1');
+    $('.benefits_item-wrapper:nth-child(2)').css('grid-area', '2/2/2/2');
+    $('.benefits_item-wrapper:nth-child(3)').css('grid-area', '3/1/3/1');
+    $('.benefits_item-wrapper:nth-child(4)').css('grid-area', '3/2/3/2');
+    $('.benefits_item-wrapper:nth-child(5)').css('grid-area', '2/3/2/3');
+    $('.benefits_item-wrapper:nth-child(6)').css('grid-area', '2/4/2/4');
+    $('.benefits_item-wrapper:nth-child(7)').css('grid-area', '1/2/1/2');
+    $('.benefits_item-wrapper:nth-child(8)').css('grid-area', '1/3/1/3');
+
+    Flip.from(benefitWrapper, {
+      duration: rubiks.duration,
+      ease: 'power2.out',
+      absolute: true,
+    });
+  }
 }
 
 // Adaptation de la longueur du scroll horizontal

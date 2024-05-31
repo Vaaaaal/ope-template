@@ -1,9 +1,10 @@
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/autoplay';
-//Custom imports CSS
-import './style.css';
 
+//Custom imports CSS
+// import './style.css';
+//
 // Custom imports JS
 import { initAnimations } from '$utils/animations';
 import { greetUser } from '$utils/greet';
@@ -16,8 +17,10 @@ window.Webflow.push(() => {
   const name = 'Vaaal';
   greetUser(name);
 
-  initMap();
+  initMap('https://www.vivantes.fr/KML-OP/contour_plombieres.kml', {
+    zoom: 13,
+  });
   initSwiper();
-  initAnimations();
+  initAnimations('plombieres');
   initPopups();
 });
