@@ -20,16 +20,26 @@ export const initPopups = () => {
 };
 
 function openSpecialModal() {
-  $('.modal_content_wrapper-special').addClass('is-active');
-  $('body').css('overflow', 'hidden');
-  $(`.modal_content_wrapper-special`).css('display', 'flex');
-
-  gsap.to(`.modal_content_wrapper-special`, {
-    y: 0,
-    duration: 0.6,
+  gsap.to(`.modal_content_wrapper.is-rdv`, {
+    y: '-150%',
+    duration: 0.4,
     ease: 'power2.out',
     onComplete: () => {
-      $('.modal_wrapper').css('pointer-events', 'auto');
+      $('.modal_content_wrapper.is-rdv').removeClass('is-active');
+      $('.modal_content_wrapper.is-iframe').addClass('is-active');
+      $('body').css('overflow', 'hidden');
+      $(`.modal_content_wrapper.is-rdv`).css('display', 'none');
+      $(`.modal_content_wrapper.is-iframe`).css('display', 'flex');
+      gsap.set(`.modal_content_wrapper.is-rdv`, { y: '150%' });
+
+      gsap.to(`.modal_content_wrapper.is-iframe`, {
+        y: 0,
+        duration: 0.4,
+        ease: 'power2.out',
+        onComplete: () => {
+          $('.modal_wrapper').css('pointer-events', 'auto');
+        },
+      });
     },
   });
 }
@@ -51,7 +61,7 @@ function openModal(id) {
 
 function closeSpecialModal(e) {
   if (
-    $(e.target).hasClass('modal_content_wrapper-special') ||
+    $(e.target).hasClass('modal_content_wrapper.is-iframe') ||
     $(e.target).hasClass('modal_close') ||
     $(e.target).hasClass('modal_close_svg') ||
     $(e.target).parent('modal_close_svg').length > 0
@@ -68,12 +78,12 @@ function closeSpecialModal(e) {
         $('.modal_content_wrapper').css('display', 'none');
       },
     });
-    gsap.to('.modal_content_wrapper-special', {
+    gsap.to('.modal_content_wrapper.is-iframe', {
       y: '150%',
       duration: 0.4,
       ease: 'power2.in',
       onComplete: () => {
-        $('.modal_content_wrapper-special').css('display', 'none');
+        $('.modal_content_wrapper.is-iframe').css('display', 'none');
       },
     });
   }
