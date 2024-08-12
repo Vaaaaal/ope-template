@@ -59,6 +59,10 @@
     .services_item_text {
         opacity: 0;
     }
+
+    .services_item_decoration {
+        opacity: 0;
+    }
 }
 
 /* 

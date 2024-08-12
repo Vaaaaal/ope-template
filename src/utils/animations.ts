@@ -242,6 +242,15 @@ export const initAnimations = (rubik: string) => {
           ease: 'power2.out',
         },
         '-=0.5'
+      )
+      .to(
+        '.services_item_decoration',
+        {
+          opacity: 1,
+          duration: 0.4,
+          ease: 'power2.out',
+        },
+        '<'
       );
 
     // Animation de la section "process"
