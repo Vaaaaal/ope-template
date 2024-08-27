@@ -13,6 +13,9 @@ const ENTRY_POINTS = [
   'src/nancy/index.ts',
   'src/copler/index.ts',
   'src/obb/index.ts',
+  'src/tdp/index.ts',
+  'src/lorient/index.ts',
+  'src/abc/index.ts',
 ];
 
 // Config dev serving

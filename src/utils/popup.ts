@@ -4,6 +4,7 @@ export const initPopups = () => {
   // Permet d'ouvrir la modal de rdv
   $('.process_cta_bg').on('click', () => openModal('.is-rdv'));
   $('.nav_rdv_button').on('click', () => openModal('.is-rdv'));
+  $('.process_cta_content_button').on('click', () => openModal('.is-rdv'));
 
   // Permet d'ouvrir la modal iframe de prise de rdv
   $('.modal_button.is-iframe').on('click', openSpecialModal);

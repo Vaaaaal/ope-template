@@ -6,7 +6,7 @@ import { SplitText } from 'gsap/SplitText';
 
 gsap.registerPlugin(ScrollTrigger, Flip, ScrollTo, SplitText);
 
-export const initAnimations = (rubik: string) => {
+export const initAnimations = (rubik: string, vertical: boolean = false) => {
   // Création d'un objet MatchMedia qui permet de gérer les animations avec le responsive
   const mm = gsap.matchMedia();
 
@@ -42,6 +42,34 @@ export const initAnimations = (rubik: string) => {
         ease: 'none',
       }
     );
+
+    if (rubik === 'lorient') {
+      const navbarTween = gsap.timeline({
+        scrollTrigger: {
+          containerAnimation: scrollTween,
+          trigger: '.section_benefits',
+          start: 'left 70%',
+          horizontal: true,
+          toggleActions: 'play none none reverse',
+        },
+      });
+
+      navbarTween
+        .to('.nav_component.is-lorient.is-front', {
+          opacity: 0,
+          duration: 0.3,
+          ease: 'power2.out',
+        })
+        .to(
+          '.nav_component.is-lorient.is-back',
+          {
+            opacity: 1,
+            duration: 0.3,
+            ease: 'power2.out',
+          },
+          '-=0.1'
+        );
+    }
 
     // Gestion de l'effet "nudge" qui apparaît seulement lorsque que le "fake scroll" est inférieur à 0.01
     setInterval(() => {
@@ -148,7 +176,9 @@ export const initAnimations = (rubik: string) => {
       end: 'right 50%',
       once: true,
       horizontal: true,
-      onEnter: () => initFirstBenefitsAnimation(rubik),
+      onEnter: () => {
+        initFirstBenefitsAnimation(rubik);
+      },
     });
 
     // Animation de la section "testimonial_first" avec Lottie
@@ -365,7 +395,7 @@ export const initAnimations = (rubik: string) => {
         '<+=0.2'
       );
 
-    setHorizontalScrollHeight();
+    setHorizontalScrollHeight(vertical);
 
     // Permet d'accéder au ancre avec le scroll horizontal
     const getPosition = getScrollLookup('section', {
@@ -422,7 +452,7 @@ export const initAnimations = (rubik: string) => {
 
     // Adaptation de la hauteur du scroll horizontal à chaque redimensionnement
     window.addEventListener('resize', () => {
-      setHorizontalScrollHeight();
+      setHorizontalScrollHeight(vertical);
     });
   });
 
@@ -500,6 +530,25 @@ function initFirstBenefitsAnimation(rubik: string) {
       absolute: true,
       onComplete: () => initSecondBenefitsAnimation(rubik),
     });
+  } else if (rubik === 'lorient') {
+    const benefitWrapper = Flip.getState('.benefits_item-wrapper');
+    $('.benefits_item-wrapper:nth-child(1)').css('grid-area', '1/1/1/1');
+    $('.benefits_item-wrapper:nth-child(2)').css('grid-area', '1/2/1/2');
+    $('.benefits_item-wrapper:nth-child(5)').css('grid-area', '1/3/1/3');
+    $('.benefits_item-wrapper:nth-child(6)').css('grid-area', '2/3/2/3');
+    $('.benefits_item-wrapper:nth-child(7)').css('grid-area', '2/4/2/4');
+    $('.benefits_item-wrapper:nth-child(8)').css('grid-area', '2/5/2/5');
+    $('.benefits_item-wrapper:nth-child(9)').css('grid-area', '3/2/3/2');
+    $('.benefits_item-wrapper:nth-child(10)').css('grid-area', '2/2/2/2');
+    // $('.benefits_item-wrapper:nth-child(11)').css('grid-area', '3/4/3/4');
+    // $('.benefits_item-wrapper:nth-child(12)').css('grid-area', '3/4/3/4');
+
+    Flip.from(benefitWrapper, {
+      duration: rubiks.duration,
+      ease: 'power2.out',
+      absolute: true,
+      onComplete: () => initSecondBenefitsAnimation(rubik),
+    });
   }
 }
 
@@ -531,6 +580,27 @@ function initSecondBenefitsAnimation(rubik: string) {
     $('.benefits_item-wrapper:nth-child(6)').css('grid-area', '2/3/2/3');
     $('.benefits_item-wrapper:nth-child(7)').css('grid-area', '1/2/1/2');
     $('.benefits_item-wrapper:nth-child(8)').css('grid-area', '1/3/1/3');
+
+    Flip.from(benefitWrapper, {
+      duration: rubiks.duration,
+      ease: 'power2.out',
+      absolute: true,
+      onComplete: () => initThirdBenefitsAnimation(rubik),
+    });
+  } else if (rubik === 'lorient') {
+    const benefitWrapper = Flip.getState('.benefits_item-wrapper');
+    $('.benefits_item-wrapper:nth-child(1)').css('grid-area', '1/2/1/2');
+    $('.benefits_item-wrapper:nth-child(2)').css('grid-area', '2/2/2/2');
+    $('.benefits_item-wrapper:nth-child(3)').css('grid-area', '2/4/2/4');
+    // $('.benefits_item-wrapper:nth-child(4)').css('grid-area', '3/2/3/2');
+    $('.benefits_item-wrapper:nth-child(5)').css('grid-area', '1/4/1/4');
+    $('.benefits_item-wrapper:nth-child(6)').css('grid-area', '1/3/1/3');
+    $('.benefits_item-wrapper:nth-child(7)').css('grid-area', '2/3/2/3');
+    // $('.benefits_item-wrapper:nth-child(8)').css('grid-area', '2/5/2/5');
+    // $('.benefits_item-wrapper:nth-child(9)').css('grid-area', '3/2/3/2');
+    $('.benefits_item-wrapper:nth-child(10)').css('grid-area', '2/1/2/1');
+    // $('.benefits_item-wrapper:nth-child(11)').css('grid-area', '3/4/3/4');
+    // $('.benefits_item-wrapper:nth-child(12)').css('grid-area', '3/4/3/4');
 
     Flip.from(benefitWrapper, {
       duration: rubiks.duration,
@@ -576,13 +646,35 @@ function initThirdBenefitsAnimation(rubik: string) {
       ease: 'power2.out',
       absolute: true,
     });
+  } else if (rubik === 'lorient') {
+    const benefitWrapper = Flip.getState('.benefits_item-wrapper');
+    $('.benefits_item-wrapper:nth-child(1)').css('grid-area', '1/3/1/3');
+    $('.benefits_item-wrapper:nth-child(2)').css('grid-area', '3/2/3/2');
+    $('.benefits_item-wrapper:nth-child(3)').css('grid-area', '3/4/3/4');
+    $('.benefits_item-wrapper:nth-child(4)').css('grid-area', '1/6/1/6');
+    $('.benefits_item-wrapper:nth-child(5)').css('grid-area', '1/5/1/5');
+    $('.benefits_item-wrapper:nth-child(6)').css('grid-area', '1/4/1/4');
+    $('.benefits_item-wrapper:nth-child(7)').css('grid-area', '2/2/2/2');
+    $('.benefits_item-wrapper:nth-child(8)').css('grid-area', '2/4/2/4');
+    $('.benefits_item-wrapper:nth-child(9)').css('grid-area', '3/3/3/3');
+    // $('.benefits_item-wrapper:nth-child(10)').css('grid-area', '3/2/3/2');
+    $('.benefits_item-wrapper:nth-child(11)').css('grid-area', '2/3/2/3');
+    $('.benefits_item-wrapper:nth-child(12)').css('grid-area', '3/5/3/5');
+
+    Flip.from(benefitWrapper, {
+      duration: rubiks.duration,
+      ease: 'power2.out',
+      absolute: true,
+    });
   }
 }
 
 // Adaptation de la longueur du scroll horizontal
-function setHorizontalScrollHeight() {
-  $('.sticky_wrapper').each(function () {
-    const height = $(this).find('.content_wrapper').outerWidth();
-    $(this).height(height);
-  });
+function setHorizontalScrollHeight(vertical: boolean = false) {
+  if (!vertical) {
+    $('.sticky_wrapper').each(function () {
+      const height = $(this).find('.content_wrapper').outerWidth();
+      $(this).height(height);
+    });
+  }
 }
