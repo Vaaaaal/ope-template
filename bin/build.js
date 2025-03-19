@@ -16,6 +16,7 @@ const ENTRY_POINTS = [
   'src/tdp/index.ts',
   'src/lorient/index.ts',
   'src/abc/index.ts',
+  'src/ruffec/index.ts',
 ];
 
 // Config dev serving
