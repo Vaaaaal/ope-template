@@ -45,7 +45,7 @@ function openSpecialModal() {
   });
 }
 
-function openModal(id) {
+function openModal(id: string) {
   $('.modal_wrapper').addClass('is-active');
   $('body').css('overflow', 'hidden');
   $(`.modal_content_wrapper${id}`).css('display', 'flex');
@@ -60,7 +60,7 @@ function openModal(id) {
   });
 }
 
-function closeSpecialModal(e) {
+function closeSpecialModal(e: JQuery.TriggeredEvent) {
   if (
     $(e.target).hasClass('modal_content_wrapper.is-iframe') ||
     $(e.target).hasClass('modal_close') ||
@@ -90,7 +90,7 @@ function closeSpecialModal(e) {
   }
 }
 
-function closeModal(e) {
+function closeModal(e: JQuery.TriggeredEvent) {
   if (
     $(e.target).hasClass('modal_wrapper') ||
     $(e.target).hasClass('modal_close') ||

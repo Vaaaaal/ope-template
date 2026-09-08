@@ -38,7 +38,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Version épinglée ici plutôt que via `packageManager` dans package.json :
+      # action-setup lève "Multiple versions of pnpm specified" si les deux
+      # existent et diffèrent, ce qui casserait les workflows finsweet (ci.yml,
+      # release.yml) qui épinglent pnpm 10 de leur côté.
       - uses: pnpm/action-setup@v4
+        with:
+          version: 10
 
       - uses: actions/setup-node@v4
         with:
