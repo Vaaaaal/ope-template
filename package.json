@@ -17,14 +17,13 @@
     "url": "https://github.com/Vaaaaal/ope-template/issues"
   },
   "type": "module",
-  "main": "src/index.ts",
-  "module": "src/index.ts",
   "files": [
     "dist"
   ],
   "scripts": {
     "dev": "cross-env NODE_ENV=development node ./bin/build.js",
     "build": "cross-env NODE_ENV=production node ./bin/build.js",
+    "urls": "node ./bin/urls.js",
     "lint": "eslint --ignore-path .gitignore ./src && prettier --check ./src",
     "lint:fix": "eslint --ignore-path .gitignore ./src --fix",
     "check": "tsc --noEmit",
@@ -41,6 +40,8 @@
     "@finsweet/eslint-config": "^2.0.7",
     "@finsweet/tsconfig": "^1.3.4",
     "@playwright/test": "^1.42.1",
+    "@types/google.maps": "^3.66.2",
+    "@types/jquery": "^3.5.34",
     "@typescript-eslint/eslint-plugin": "^7.1.1",
     "@typescript-eslint/parser": "^7.1.1",
     "cross-env": "^7.0.3",
@@ -55,7 +56,7 @@
   "dependencies": {
     "@finsweet/ts-utils": "^0.40.0",
     "@googlemaps/js-api-loader": "^1.16.6",
-    "gsap": "file:gsap-bonus.tgz",
+    "gsap": "^3.15.0",
     "swiper": "^11.1.1"
   },
   "engines": {

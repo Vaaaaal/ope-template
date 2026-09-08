@@ -16,6 +16,9 @@ https://www.reddit.com/r/npm/comments/1pov7lo/how_to_publish_with_the_new_granul
     - [Serving files on development mode](#serving-files-on-development-mode)
     - [Building multiple files](#building-multiple-files)
     - [Setting up a path alias](#setting-up-a-path-alias)
+- [Hébergement des bundles (jsDelivr)](#hébergement-des-bundles-jsdelivr)
+  - [Publier une nouvelle version](#publier-une-nouvelle-version)
+  - [Build automatique de `dist`](#build-automatique-de-dist)
 - [Contributing guide](#contributing-guide)
 - [Pre-defined scripts](#pre-defined-scripts)
 - [CI/CD](#cicd)
@@ -58,14 +61,6 @@ After creating the new repository, open it in your terminal and install the pack
 ```bash
 pnpm install
 ```
-
-> [!IMPORTANT]
-> Ce projet dépend de **GSAP Business** via `"gsap": "file:gsap-bonus.tgz"`.
-> L'archive `gsap-bonus.tgz` est exclue du dépôt (règle `*.tgz` du `.gitignore`)
-> car il s'agit d'un paquet sous licence payante. Sur un clone frais,
-> `pnpm install` échouera tant que le fichier n'a pas été déposé à la racine
-> du projet. Il se télécharge depuis le compte GSAP Club GreenSock de
-> Villes Vivantes.
 
 If this is the first time using Playwright and you want to use it in this project, you'll also have to install the browsers by running:
 
@@ -117,6 +112,15 @@ const ENTRY_POINTS = [
 
 This will tell `esbuild` to build all those files and output them in the `dist` folder for production and in `http://localhost:3000` for development.
 
+> [!TIP]
+> **Ajouter une ville** : copie [`src/template.ts`](src/template.ts) dans
+> `src/<ville>/index.ts`, crée son `<ville>.css` à côté, adapte l'URL du KML et
+> l'appel à `initAnimations`, puis ajoute l'entrypoint à `ENTRY_POINTS`.
+>
+> `src/template.ts` n'est volontairement **pas** un entrypoint : c'est un modèle,
+> pas un bundle à publier. Il l'a été par le passé et poussait 242 Ko inutiles
+> sur le CDN, pour un contenu identique à celui de Plombières.
+
 ### Building CSS files
 
 CSS files are also supported by the bundler. When including a CSS file as an entry point, the compiler will generate a minified version in your output folder.
@@ -159,20 +163,95 @@ You can set up path aliases using the `paths` setting in `tsconfig.json`. This t
 
 To avoid any surprises, take some time to familiarize yourself with the [tsconfig](/tsconfig.json) enabled flags.
 
+## Hébergement des bundles (jsDelivr)
+
+Les bundles compilés ne sont **pas** consommés comme une dépendance npm : ce dépôt
+n'est pas une librairie (il n'exporte rien, `main` ne pointe vers aucun module
+importable). Chaque fichier de `dist` est un script autonome, chargé par une balise
+`<script>` dans le custom code Webflow.
+
+Ils sont donc servis directement depuis GitHub via **jsDelivr**, qui expose
+n'importe quel dépôt public sous `/gh/{owner}/{repo}@{ref}/{chemin}` :
+
+```html
+<script defer src="https://cdn.jsdelivr.net/gh/Vaaaaal/ope-template@v0.22.0/dist/plombieres/index.js"></script>
+```
+
+C'est pour cette raison que le dossier `dist` est **versionné dans git** (contrairement
+au starter Finsweet d'origine) : sans lui, jsDelivr n'aurait rien à servir.
+
+> [!IMPORTANT]
+> Cible toujours un **tag** (`@v0.22.0`), jamais une branche. Une URL taguée est
+> immuable et mise en cache indéfiniment par jsDelivr. Une URL de branche est
+> recachée toutes les 12 h : une correction peut mettre une demi-journée à
+> apparaître, et un site en production peut changer de comportement sans
+> qu'aucun déploiement n'ait eu lieu.
+
+Pour obtenir les URLs de tous les fichiers de la version courante :
+
+```bash
+pnpm urls
+```
+
+Le script affiche, pour chaque fichier de `dist`, la balise prête à coller dans
+Webflow. Il avertit si le tag correspondant n'existe pas encore (les URLs
+renverraient alors 404). Pour tester avant de taguer, vise un commit précis :
+
+```bash
+pnpm urls --ref 3aff4b8
+```
+
+### Publier une nouvelle version
+
+`dist` est recompilé par la CI (voir la section suivante). Une release consiste
+donc à pousser, laisser la CI committer `dist`, puis taguer :
+
+```bash
+git push origin master          # la CI recompile et commite dist
+git pull                        # récupère le commit "build: recompile dist"
+git tag v0.23.0                 # le tag fige les URLs jsDelivr
+git push origin v0.23.0         # sans ça, jsDelivr renvoie 404
+pnpm urls                       # les balises à coller dans Webflow
+```
+
+Il n'y a pas de purge à faire côté jsDelivr : chaque version ayant sa propre URL,
+un nouveau tag n'invalide jamais l'ancienne. Les sites déjà en ligne continuent de
+pointer vers leur version, et sont migrés un par un en changeant leur balise.
+
+### Build automatique de `dist`
+
+`dist` étant versionné, il doit rester synchrone avec `src`. Le workflow
+[`build-dist.yml`](.github/workflows/build-dist.yml) s'en charge : à chaque push sur
+`master` touchant `src/`, `bin/`, `package.json` ou `pnpm-lock.yaml`, il recompile et
+commite `dist` s'il a changé.
+
+Tu n'as donc pas à lancer `pnpm build` avant de taguer — mais tu dois **attendre que
+le workflow ait poussé son commit** avant de créer le tag, sinon celui-ci figerait un
+`dist` périmé.
+
+> [!NOTE]
+> Ce build en CI n'a longtemps pas été possible : le projet dépendait de GSAP
+> Business via une archive `gsap-bonus.tgz` sous licence payante, exclue du dépôt,
+> sans laquelle `pnpm install` échouait sur un runner. Depuis le rachat de GSAP par
+> Webflow, tous les plugins sont gratuits et publiés sur le npm public — dont
+> `SplitText`, le seul plugin premium que ce projet utilisait.
+
 ## Testing
 
 As previously mentioned, this library has [Playwright](https://playwright.dev/) included as an automated testing tool.
 
-All tests are located under the `/tests` folder. This template includes a test spec example that will help you catch up with Playwright.
+> [!NOTE]
+> **Ce projet n'a aucun test pour l'instant.** La spec de démo du starter, qui
+> interrogeait `https://playwright.dev/`, a été supprimée : elle ne testait rien
+> de ce code et échouait dès que ce site externe changeait. Le job `Tests` est
+> commenté dans [`ci.yml`](.github/workflows/ci.yml).
 
-After [installing the dependencies](#installing), you can try it out by running `pnpm test`.
-Make sure you replace it with your own tests! Writing proper tests will help improve the maintainability and scalability of your project in the long term.
+Playwright reste installé. Pour remettre des tests en place : écris tes specs dans
+`/tests`, décommente le job `Tests` dans `ci.yml`, et remonte `@playwright/test`
+— la version épinglée (1.42.1) ne s'installe plus sur les runners Ubuntu 24.04.
 
 By default, Playwright will also run `pnpm dev` in the background while the tests are running, so [your files served](#serving-files-on-development-mode) under `localhost:3000` will run as usual.
 You can disable this behavior in the `playwright.config.ts` file.
-
-If you project doesn't require any testing, you should disable the Tests job in the [CI workflow](#continuous-integration) by commenting it out in the `.github/workflows/ci.yml` file.
-This will prevent the tests from running when you open a Pull Request.
 
 ## Contributing guide
 
@@ -192,6 +271,7 @@ This template contains a set of predefined scripts in the `package.json` file:
 
 - `pnpm dev`: Builds and creates a local server that serves all files (check [Serving files on development mode](#serving-files-on-development-mode) for more info).
 - `pnpm build`: Builds to the production directory (`dist`).
+- `pnpm urls`: Affiche les URLs jsDelivr et les balises `<script>` / `<link>` de la version courante, prêtes à coller dans Webflow (voir [Hébergement des bundles](#hébergement-des-bundles-jsdelivr)).
 - `pnpm lint`: Scans the codebase with ESLint and Prettier to see if there are any errors.
 - `pnpm lint:fix`: Fixes all auto-fixable issues in ESLint.
 - `pnpm check`: Checks for TypeScript errors in the codebase.

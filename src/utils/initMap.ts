@@ -14,7 +14,8 @@ export const initMap = (kml: string, data: { zoom: number }) => {
       zoom: data.zoom,
     });
 
-    new google.maps.KmlLayer(src, {
+    new google.maps.KmlLayer({
+      url: src,
       suppressInfoWindows: true,
       preserveViewport: false,
       map: map,

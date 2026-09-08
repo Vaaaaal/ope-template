@@ -73,7 +73,8 @@ export const initAnimations = (rubik: string, vertical: boolean = false) => {
 
     // Gestion de l'effet "nudge" qui apparaît seulement lorsque que le "fake scroll" est inférieur à 0.01
     setInterval(() => {
-      if (scrollTween?.scrollTrigger.progress <= 0.01) {
+      const fakeScrollProgress = scrollTween?.scrollTrigger?.progress;
+      if (fakeScrollProgress !== undefined && fakeScrollProgress <= 0.01) {
         const nudge = {
           duration: 0.4,
         };
@@ -245,7 +246,7 @@ export const initAnimations = (rubik: string, vertical: boolean = false) => {
       );
 
     // Animation de la section "services"
-    gsap.utils.toArray('.services_item_bg').forEach((el) => {
+    gsap.utils.toArray<HTMLElement>('.services_item_bg').forEach((el) => {
       gsap.set(el, { yPercent: -50, xPercent: -50, scale: $(el).attr('scale') });
     });
     const serviceItemTween = gsap.timeline({
@@ -293,7 +294,7 @@ export const initAnimations = (rubik: string, vertical: boolean = false) => {
         once: true,
       },
     });
-    gsap.utils.toArray('.process_item_wrapper').forEach((el) => {
+    gsap.utils.toArray<HTMLElement>('.process_item_wrapper').forEach((el) => {
       const split = new SplitText($(el).find('.process_item_title'), {
         type: 'lines, words',
         linesClass: 'line',
@@ -403,12 +404,15 @@ export const initAnimations = (rubik: string, vertical: boolean = false) => {
       containerAnimation: scrollTween,
     });
 
-    const navLinks = gsap.utils.toArray('.nav_menu_link');
+    const navLinks = gsap.utils.toArray<HTMLElement>('.nav_menu_link');
     navLinks.forEach((el, index) => {
       el.addEventListener('click', (e) => {
         e.preventDefault();
+        const position = getPosition(el.getAttribute('href'));
+        if (position === undefined) return;
+
         gsap.to(window, {
-          scrollTo: getPosition(el.getAttribute('href')),
+          scrollTo: position,
           overwrite: 'auto',
           duration: 1,
         });
@@ -465,8 +469,19 @@ export const initAnimations = (rubik: string, vertical: boolean = false) => {
  * Fonction récupérer ici : https://gsap.com/docs/v3/HelperFunctions/helpers/getScrollLookup
  * Permet de connaître la position du scroll pour chaque section et y accéder "plus tard"
  */
-function getScrollLookup(targets, { start, pinnedContainer, containerAnimation }) {
-  const triggers = gsap.utils.toArray(targets).map((el) =>
+function getScrollLookup(
+  targets: gsap.DOMTarget,
+  {
+    start,
+    pinnedContainer,
+    containerAnimation,
+  }: {
+    start?: string;
+    pinnedContainer?: gsap.DOMTarget;
+    containerAnimation?: gsap.core.Animation;
+  }
+) {
+  const triggers = gsap.utils.toArray<HTMLElement>(targets).map((el) =>
       ScrollTrigger.create({
         trigger: el,
         start: start || 'top top',
@@ -476,14 +491,18 @@ function getScrollLookup(targets, { start, pinnedContainer, containerAnimation }
       })
     ),
     st = containerAnimation && containerAnimation.scrollTrigger;
-  return (target) => {
-    let t = gsap.utils.toArray(target)[0],
-      i = triggers.length;
+  return (target: gsap.DOMTarget) => {
+    const t = gsap.utils.toArray<HTMLElement>(target)[0];
+    let i = triggers.length;
     while (i-- && triggers[i].trigger !== t) {}
     if (i < 0) {
-      return console.warn('target not found', target);
+      // eslint-disable-next-line no-console
+      console.warn('target not found', target);
+      return undefined;
     }
-    return containerAnimation
+    // `st` n'existe que si containerAnimation en a un ; TS ne peut pas le
+    // déduire depuis la closure, d'où le test explicite.
+    return containerAnimation && st
       ? st.start + (triggers[i].start / containerAnimation.duration()) * (st.end - st.start)
       : triggers[i].start;
   };
@@ -674,7 +693,9 @@ function setHorizontalScrollHeight(vertical: boolean = false) {
   if (!vertical) {
     $('.sticky_wrapper').each(function () {
       const height = $(this).find('.content_wrapper').outerWidth();
-      $(this).height(height);
+      if (height !== undefined) {
+        $(this).height(height);
+      }
     });
   }
 }
