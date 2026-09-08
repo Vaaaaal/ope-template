@@ -24,7 +24,6 @@ https://www.reddit.com/r/npm/comments/1pov7lo/how_to_publish_with_the_new_granul
 - [CI/CD](#cicd)
   - [Continuous Integration](#continuous-integration)
   - [Continuous Deployment](#continuous-deployment)
-  - [How to automatically deploy updates to npm](#how-to-automatically-deploy-updates-to-npm)
 
 ## Included tools
 
@@ -46,7 +45,7 @@ This template requires the use of [pnpm](https://pnpm.js.org/en/). You can [inst
 npm i -g pnpm
 ```
 
-To enable automatic deployments to npm, please read the [Continuous Deployment](#continuous-deployment) section.
+Les bundles compilés sont servis via jsDelivr — voir [Hébergement des bundles](#hébergement-des-bundles-jsdelivr).
 
 ## Getting started
 
@@ -261,7 +260,7 @@ In general, your development workflow should look like this:
 2. Once you've finished the implementation, [create a Changeset](#continuous-deployment) (or multiple) explaining the changes that you've made in the codebase.
 3. Open a Pull Request and wait until the [CI workflows](#continuous-integration) finish. If something fails, please try to fix it before merging the PR.
    If you don't want to wait for the CI workflows to run on GitHub to know if something fails, it will be always faster to run them in your machine before opening a PR.
-4. Merge the Pull Request. The Changesets bot will automatically open a new PR with updates to the `CHANGELOG.md`, you should also merge that one. If you have [automatic npm deployments](#how-to-automatically-deploy-updates-to-npm) enabled, Changesets will also publish this new version on npm.
+4. Merge the Pull Request. Le workflow `build-dist.yml` recompile et commite `dist`, puis tu crées le tag qui fige les URLs jsDelivr — voir [Publier une nouvelle version](#publier-une-nouvelle-version).
 
 If you need to work on several features before publishing a new version on npm, it is a good practise to create a `development` branch where to merge all the PR's before pushing your code to master.
 
@@ -278,7 +277,6 @@ This template contains a set of predefined scripts in the `package.json` file:
 - `pnpm format`: Formats all the files in the codebase using Prettier. You probably won't need this script if you have automatic [formatting on save](https://www.digitalocean.com/community/tutorials/code-formatting-with-prettier-in-visual-studio-code#automatically-format-on-save) active in your editor.
 - `pnpm test`: Will run all the tests that are located in the `/tests` folder.
 - `pnpm test:headed`: Will run all the tests that are located in the `/tests` folder visually in headed browsers.
-- `pnpm release`: This command is defined for [Changesets](https://github.com/changesets/changesets). You don't have to interact with it.
 - `pnpm run update`: Scans the dependencies of the project and provides an interactive UI to select the ones that you want to update.
 
 ## CI/CD
@@ -290,52 +288,28 @@ This template contains a set of helpers with proper CI/CD workflows.
 When you open a Pull Request, a Continuous Integration workflow will run to:
 
 - Lint & check your code. It uses the `pnpm lint` and `pnpm check` commands under the hood.
-- Run the automated tests. It uses the `pnpm test` command under the hood.
 
-If any of these jobs fail, you will get a warning in your Pull Request and should try to fix your code accordingly.
+If this job fails, you will get a warning in your Pull Request and should try to fix your code accordingly.
 
-**Note:** If your project doesn't contain any defined tests in the `/tests` folder, you can skip the Tests workflow job by commenting it out in the `.github/workflows/ci.yml` file. This will significantly improve the workflow running times.
+Le job `Tests` est désactivé — voir [Testing](#testing).
 
 ### Continuous Deployment
 
-[Changesets](https://github.com/changesets/changesets) allows us to generate automatic changelog updates when merging a Pull Request to the `master` branch.
+Ce dépôt **ne publie plus sur npm**. Les bundles sont servis depuis GitHub via
+jsDelivr — voir [Hébergement des bundles](#hébergement-des-bundles-jsdelivr) pour
+le flux de release.
 
-Before starting, make sure to [enable full compatibility with Changesets in the repository](#how-to-enable-continuous-deployment-with-changesets).
+Le workflow [`build-dist.yml`](.github/workflows/build-dist.yml) recompile et
+commite `dist` à chaque push sur `master` ; il ne reste plus qu'à taguer.
 
-To generate a new changelog, run:
-
-```bash
-pnpm changeset
-```
-
-You'll be prompted with a few questions to complete the changelog.
-
-Once the Pull Request is merged into `master`, a new Pull Request will automatically be opened by a changesets bot that bumps the package version and updates the `CHANGELOG.md` file.
-You'll have to manually merge this new PR to complete the workflow.
-
-If an `NPM_TOKEN` secret is included in the repository secrets, Changesets will automatically deploy the new package version to npm.
-See [how to automatically deploy updates to npm](#how-to-automatically-deploy-updates-to-npm) for more info.
-
-#### How to enable Continuous Deployment with Changesets
-
-Some repositories may not have the required permissions to let Changesets interact with the repository.
-
-To enable full compatibility with Changesets, go to the repository settings (`Settings > Actions > General > Workflow Permissions`) and define:
-
-- ✅ Read and write permissions.
-- ✅ Allow GitHub Actions to create and approve pull requests.
-
-Enabling this setting for your organization account (`Account Settings > Actions > General`) could help streamline the process. By doing so, any new repos created under the org will automatically inherit the setting, which can save your teammates time and effort. This can only be applied to organization accounts at the time.
-
-#### How to automatically deploy updates to npm
-
-As mentioned before, Changesets will automatically deploy the new package version to npm if an `NPM_TOKEN` secret is provided.
-
-This npm token should be:
-
-- From Finsweet's npm organization if this repository is meant for internal/product development.
-- From a client's npm organization if this repository is meant for client development. In this case, you should ask the client to [create an npm account](https://www.npmjs.com/signup) and provide you the credentials (or the npm token, if they know how to get it).
-
-Once you're logged into the npm account, you can get an access token by following [this guide](https://docs.npmjs.com/creating-and-viewing-access-tokens).
-
-The access token must be then placed in a [repository secret](https://docs.github.com/en/codespaces/managing-codespaces-for-your-organization/managing-encrypted-secrets-for-your-repository-and-organization-for-codespaces#adding-secrets-for-a-repository) named `NPM_TOKEN`.
+> [!NOTE]
+> Les versions `0.19.0` à `0.22.0` restent publiées sur npm et continuent d'être
+> servies par jsDelivr sous `cdn.jsdelivr.net/npm/@villes-vivantes/ope-template@…`.
+> Les sites Webflow qui pointent encore vers ces URLs **fonctionnent toujours**,
+> mais ne recevront plus de mise à jour : il faut les migrer une par une vers une
+> URL `/gh/` taguée.
+>
+> Concrètement, `@changesets/cli` reste installé pour gérer versions et changelog,
+> mais `changeset publish`, le workflow `release.yml`, le secret `NPM_TOKEN` et
+> le fichier `.npmrc` ne servent plus à rien. Le paquet est marqué `private` pour
+> empêcher toute publication accidentelle.
