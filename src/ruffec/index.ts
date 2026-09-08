@@ -2,7 +2,7 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/autoplay';
 //Custom imports CSS
-import './copler.css';
+import './ruffec.css';
 
 // Custom imports JS
 import { initAnimations } from '$utils/animations';

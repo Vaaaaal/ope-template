@@ -112,6 +112,15 @@ const ENTRY_POINTS = [
 
 This will tell `esbuild` to build all those files and output them in the `dist` folder for production and in `http://localhost:3000` for development.
 
+> [!TIP]
+> **Ajouter une ville** : copie [`src/template.ts`](src/template.ts) dans
+> `src/<ville>/index.ts`, crée son `<ville>.css` à côté, adapte l'URL du KML et
+> l'appel à `initAnimations`, puis ajoute l'entrypoint à `ENTRY_POINTS`.
+>
+> `src/template.ts` n'est volontairement **pas** un entrypoint : c'est un modèle,
+> pas un bundle à publier. Il l'a été par le passé et poussait 242 Ko inutiles
+> sur le CDN, pour un contenu identique à celui de Plombières.
+
 ### Building CSS files
 
 CSS files are also supported by the bundler. When including a CSS file as an entry point, the compiler will generate a minified version in your output folder.

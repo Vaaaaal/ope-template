@@ -7,6 +7,9 @@ const BUILD_DIRECTORY = 'dist';
 const PRODUCTION = process.env.NODE_ENV === 'production';
 
 // Config entrypoint files
+// `src/template.ts` n'y figure pas volontairement : c'est le modèle à copier
+// pour ajouter une ville, pas un bundle à publier. Il était identique à
+// plombieres/index.ts et poussait 242 Ko inutiles sur le CDN.
 const ENTRY_POINTS = [
   'src/abc/index.ts',
   'src/aurillac/index.ts',
@@ -21,7 +24,6 @@ const ENTRY_POINTS = [
   'src/ruffec/index.ts',
   'src/scot/index.ts',
   'src/tarusate/index.ts',
-  'src/template.ts',
   'src/tdp/index.ts',
 ];
 

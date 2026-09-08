@@ -17,8 +17,6 @@
     "url": "https://github.com/Vaaaaal/ope-template/issues"
   },
   "type": "module",
-  "main": "src/index.ts",
-  "module": "src/index.ts",
   "files": [
     "dist"
   ],
