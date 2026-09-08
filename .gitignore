@@ -26,3 +26,9 @@ typings/
 
 # Production files
 dist
+
+# npm credentials — ne jamais versionner
+.npmrc
+
+# macOS
+.DS_Store

@@ -1,6 +1,6 @@
 {
   "name": "@villes-vivantes/ope-template",
-  "version": "0.13.0",
+  "version": "0.22.0",
   "description": "OPE Template project made by Vaaal using Finsweet developer starter.",
   "homepage": "https://github.com/Vaaaaal/ope-template#readme",
   "license": "ISC",
@@ -31,6 +31,7 @@
     "format": "prettier --write ./src",
     "test": "playwright test",
     "test:ui": "playwright test --ui",
+    "prepublishOnly": "node ./bin/check-clean.js",
     "release": "changeset publish",
     "update": "pnpm update -i -L -r"
   },

@@ -2,7 +2,7 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/autoplay';
 //Custom imports CSS
-import './aurillac.css';
+import './beaurepaire.css';
 
 // Custom imports JS
 import { initAnimations } from '$utils/animations';
@@ -16,10 +16,10 @@ window.Webflow.push(() => {
   const name = 'Vaaal';
   greetUser(name);
 
-  initMap('https://www.vivantes.fr/KML-OP/AurillacAgglo.kml', {
+  initMap('https://bimby.pays-de-vitre.fr/KML-OP/beaurepaire.kml', {
     zoom: 13,
   });
   initSwiper();
-  initAnimations('aurillac');
+  initAnimations('plombieres');
   initPopups();
 });

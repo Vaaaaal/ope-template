@@ -4,6 +4,8 @@ A starter template for both Client & Power projects.
 
 Before starting to work with this template, please take some time to read through the documentation.
 
+https://www.reddit.com/r/npm/comments/1pov7lo/how_to_publish_with_the_new_granular_tokens_and/
+
 ## Reference
 
 - [Included tools](#included-tools)
@@ -56,6 +58,14 @@ After creating the new repository, open it in your terminal and install the pack
 ```bash
 pnpm install
 ```
+
+> [!IMPORTANT]
+> Ce projet dépend de **GSAP Business** via `"gsap": "file:gsap-bonus.tgz"`.
+> L'archive `gsap-bonus.tgz` est exclue du dépôt (règle `*.tgz` du `.gitignore`)
+> car il s'agit d'un paquet sous licence payante. Sur un clone frais,
+> `pnpm install` échouera tant que le fichier n'a pas été déposé à la racine
+> du projet. Il se télécharge depuis le compte GSAP Club GreenSock de
+> Villes Vivantes.
 
 If this is the first time using Playwright and you want to use it in this project, you'll also have to install the browsers by running:
 

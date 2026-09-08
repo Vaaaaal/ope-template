@@ -516,7 +516,7 @@ function initFirstBenefitsAnimation(rubik: string) {
       absolute: true,
       onComplete: () => initSecondBenefitsAnimation(rubik),
     });
-  } else if (rubik === 'nancy') {
+  } else if (rubik === 'nancy' || rubik === 'aurillac') {
     const benefitWrapper = Flip.getState('.benefits_item-wrapper');
     $('.benefits_item-wrapper:nth-child(1)').css('grid-area', '2/1/2/1');
     $('.benefits_item-wrapper:nth-child(2)').css('grid-area', '3/1/3/1');
@@ -570,7 +570,7 @@ function initSecondBenefitsAnimation(rubik: string) {
       absolute: true,
       onComplete: () => initThirdBenefitsAnimation(rubik),
     });
-  } else if (rubik === 'nancy') {
+  } else if (rubik === 'nancy' || rubik === 'aurillac') {
     const benefitWrapper = Flip.getState('.benefits_item-wrapper');
     $('.benefits_item-wrapper:nth-child(1)').css('grid-area', '1/1/1/1');
     $('.benefits_item-wrapper:nth-child(2)').css('grid-area', '2/1/2/1');
@@ -630,7 +630,7 @@ function initThirdBenefitsAnimation(rubik: string) {
       ease: 'power2.out',
       absolute: true,
     });
-  } else if (rubik === 'nancy') {
+  } else if (rubik === 'nancy' || rubik === 'aurillac') {
     const benefitWrapper = Flip.getState('.benefits_item-wrapper');
     $('.benefits_item-wrapper:nth-child(1)').css('grid-area', '2/1/2/1');
     $('.benefits_item-wrapper:nth-child(2)').css('grid-area', '2/2/2/2');

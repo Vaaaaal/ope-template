@@ -2,7 +2,7 @@ import { Loader } from '@googlemaps/js-api-loader';
 
 export const initMap = (kml: string, data: { zoom: number }) => {
   const loader = new Loader({
-    apiKey: 'AIzaSyCZBPIsjGCYoWa1y9E4T60tiAIWer1IjUk',
+    apiKey: 'AIzaSyCwlbkJdDgFRcfRLGZ2vMT0LnJbq32K02k',
     version: 'weekly',
   });
 

@@ -8,16 +8,21 @@ const PRODUCTION = process.env.NODE_ENV === 'production';
 
 // Config entrypoint files
 const ENTRY_POINTS = [
-  'src/template.ts',
-  'src/plombieres/index.ts',
-  'src/nancy/index.ts',
-  'src/copler/index.ts',
-  'src/obb/index.ts',
-  'src/tdp/index.ts',
-  'src/lorient/index.ts',
   'src/abc/index.ts',
-  'src/ruffec/index.ts',
   'src/aurillac/index.ts',
+  'src/beaurepaire/index.ts',
+  'src/copler/index.ts',
+  'src/forez/index.ts',
+  'src/lorient/index.ts',
+  'src/nancy/index.ts',
+  'src/obb/index.ts',
+  'src/peage-roussillon/index.ts',
+  'src/plombieres/index.ts',
+  'src/ruffec/index.ts',
+  'src/scot/index.ts',
+  'src/tarusate/index.ts',
+  'src/template.ts',
+  'src/tdp/index.ts',
 ];
 
 // Config dev serving
