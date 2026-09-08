@@ -7,6 +7,16 @@ jobs:
   Lint:
     uses: finsweet/workflow-ci-lint/.github/workflows/lint.yml@main
 
-  # Comment this job out if your project doesn't have any tests.
-  Tests:
-    uses: finsweet/workflow-ci-test/.github/workflows/test.yml@main
+  # Désactivé : le projet n'a pas de tests qui lui soient propres.
+  #
+  # Ce dépôt n'a jamais contenu que la spec de démo du starter Finsweet, qui
+  # interrogeait https://playwright.dev/ — aucun signal sur ce code, et un
+  # échec à chaque fois que ce site externe bouge. Elle a été supprimée.
+  #
+  # Playwright reste installé : réactive ce job en écrivant de vrais tests
+  # dans /tests. Prévoir alors de remonter @playwright/test, épinglé en
+  # 1.42.1, dont `playwright install --with-deps` échoue sur Ubuntu 24.04
+  # (libasound2, libffi7 et libx264-163 n'y existent plus).
+  #
+  # Tests:
+  #   uses: finsweet/workflow-ci-test/.github/workflows/test.yml@main

@@ -231,16 +231,18 @@ le workflow ait poussé son commit** avant de créer le tag, sinon celui-ci fige
 
 As previously mentioned, this library has [Playwright](https://playwright.dev/) included as an automated testing tool.
 
-All tests are located under the `/tests` folder. This template includes a test spec example that will help you catch up with Playwright.
+> [!NOTE]
+> **Ce projet n'a aucun test pour l'instant.** La spec de démo du starter, qui
+> interrogeait `https://playwright.dev/`, a été supprimée : elle ne testait rien
+> de ce code et échouait dès que ce site externe changeait. Le job `Tests` est
+> commenté dans [`ci.yml`](.github/workflows/ci.yml).
 
-After [installing the dependencies](#installing), you can try it out by running `pnpm test`.
-Make sure you replace it with your own tests! Writing proper tests will help improve the maintainability and scalability of your project in the long term.
+Playwright reste installé. Pour remettre des tests en place : écris tes specs dans
+`/tests`, décommente le job `Tests` dans `ci.yml`, et remonte `@playwright/test`
+— la version épinglée (1.42.1) ne s'installe plus sur les runners Ubuntu 24.04.
 
 By default, Playwright will also run `pnpm dev` in the background while the tests are running, so [your files served](#serving-files-on-development-mode) under `localhost:3000` will run as usual.
 You can disable this behavior in the `playwright.config.ts` file.
-
-If you project doesn't require any testing, you should disable the Tests job in the [CI workflow](#continuous-integration) by commenting it out in the `.github/workflows/ci.yml` file.
-This will prevent the tests from running when you open a Pull Request.
 
 ## Contributing guide
 
