@@ -18,7 +18,7 @@ https://www.reddit.com/r/npm/comments/1pov7lo/how_to_publish_with_the_new_granul
     - [Setting up a path alias](#setting-up-a-path-alias)
 - [Hébergement des bundles (jsDelivr)](#hébergement-des-bundles-jsdelivr)
   - [Publier une nouvelle version](#publier-une-nouvelle-version)
-  - [Pourquoi pas de build en CI](#pourquoi-pas-de-build-en-ci)
+  - [Build automatique de `dist`](#build-automatique-de-dist)
 - [Contributing guide](#contributing-guide)
 - [Pre-defined scripts](#pre-defined-scripts)
 - [CI/CD](#cicd)
@@ -61,14 +61,6 @@ After creating the new repository, open it in your terminal and install the pack
 ```bash
 pnpm install
 ```
-
-> [!IMPORTANT]
-> Ce projet dépend de **GSAP Business** via `"gsap": "file:gsap-bonus.tgz"`.
-> L'archive `gsap-bonus.tgz` est exclue du dépôt (règle `*.tgz` du `.gitignore`)
-> car il s'agit d'un paquet sous licence payante. Sur un clone frais,
-> `pnpm install` échouera tant que le fichier n'a pas été déposé à la racine
-> du projet. Il se télécharge depuis le compte GSAP Club GreenSock de
-> Villes Vivantes.
 
 If this is the first time using Playwright and you want to use it in this project, you'll also have to install the browsers by running:
 
@@ -202,14 +194,14 @@ pnpm urls --ref 3aff4b8
 
 ### Publier une nouvelle version
 
-Le build tourne **en local** (voir la section suivante). `dist` étant versionné,
-il doit être recompilé et commité avant chaque tag :
+`dist` est recompilé par la CI (voir la section suivante). Une release consiste
+donc à pousser, laisser la CI committer `dist`, puis taguer :
 
 ```bash
-pnpm build                      # régénère dist
-git add -A && git commit -m "build: v0.23.0"
+git push origin master          # la CI recompile et commite dist
+git pull                        # récupère le commit "build: recompile dist"
 git tag v0.23.0                 # le tag fige les URLs jsDelivr
-git push origin master --tags   # sans --tags, jsDelivr renvoie 404
+git push origin v0.23.0         # sans ça, jsDelivr renvoie 404
 pnpm urls                       # les balises à coller dans Webflow
 ```
 
@@ -217,18 +209,23 @@ Il n'y a pas de purge à faire côté jsDelivr : chaque version ayant sa propre 
 un nouveau tag n'invalide jamais l'ancienne. Les sites déjà en ligne continuent de
 pointer vers leur version, et sont migrés un par un en changeant leur balise.
 
-### Pourquoi pas de build en CI
+### Build automatique de `dist`
 
-Ce projet dépend de **GSAP Business** via `"gsap": "file:gsap-bonus.tgz"`. Cette
-archive est sous licence payante et volontairement exclue du dépôt
-([voir Installing](#installing)). Un runner GitHub Actions ne peut donc pas
-exécuter `pnpm install`, et par conséquent pas `pnpm build`.
+`dist` étant versionné, il doit rester synchrone avec `src`. Le workflow
+[`build-dist.yml`](.github/workflows/build-dist.yml) s'en charge : à chaque push sur
+`master` touchant `src/`, `bin/`, `package.json` ou `pnpm-lock.yaml`, il recompile et
+commite `dist` s'il a changé.
 
-Automatiser le build en CI supposerait au préalable de passer par le registre privé
-GreenSock (`https://npm.greensock.com`) avec un token en secret de dépôt. Tant que
-ce n'est pas fait, **le build est manuel et local** — d'où l'importance de la
-vérification `bin/check-clean.js`, qui empêche de publier depuis un répertoire de
-travail non commité.
+Tu n'as donc pas à lancer `pnpm build` avant de taguer — mais tu dois **attendre que
+le workflow ait poussé son commit** avant de créer le tag, sinon celui-ci figerait un
+`dist` périmé.
+
+> [!NOTE]
+> Ce build en CI n'a longtemps pas été possible : le projet dépendait de GSAP
+> Business via une archive `gsap-bonus.tgz` sous licence payante, exclue du dépôt,
+> sans laquelle `pnpm install` échouait sur un runner. Depuis le rachat de GSAP par
+> Webflow, tous les plugins sont gratuits et publiés sur le npm public — dont
+> `SplitText`, le seul plugin premium que ce projet utilisait.
 
 ## Testing
 

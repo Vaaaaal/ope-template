@@ -15,8 +15,8 @@ importers:
         specifier: ^1.16.6
         version: 1.16.6
       gsap:
-        specifier: file:gsap-bonus.tgz
-        version: file:gsap-bonus.tgz
+        specifier: ^3.15.0
+        version: 3.15.0
       swiper:
         specifier: ^11.1.1
         version: 11.1.1
@@ -880,9 +880,8 @@ packages:
   graphemer@1.4.0:
     resolution: {integrity: sha512-EtKwoO6kxCL9WO5xipiHTZlSzBm7WLT627TqC/uVRd0HKmq8NXyebnNYxDoBi7wt8eTWrUrKXCOVaFq9x1kgag==}
 
-  gsap@file:gsap-bonus.tgz:
-    resolution: {integrity: sha512-Q/GR6Bq13T9ulCSt3bIxHtYu5NbeBZwTi9DykpMFGsF1xUNmG5zNHr/B7TtECURU+N9JSFEPoFj9o77gXfVSRw==, tarball: file:gsap-bonus.tgz}
-    version: 3.12.5
+  gsap@3.15.0:
+    resolution: {integrity: sha512-dMW4CWBTUK1AEEDeZc1g4xpPGIrSf9fJF960qbTZmN/QwZIWY5wgliS6JWl9/25fpTGJrMRtSjGtOmPnfjZB+A==}
 
   hard-rejection@2.1.0:
     resolution: {integrity: sha512-VIZB+ibDhx7ObhAe7OVtoEbuP4h/MuOTHJ+J8h/eBXotJYl0fBgR72xDFCKgIh22OJZIOVNxBMWuhAr10r8HdA==}
@@ -2638,7 +2637,7 @@ snapshots:
 
   graphemer@1.4.0: {}
 
-  gsap@file:gsap-bonus.tgz: {}
+  gsap@3.15.0: {}
 
   hard-rejection@2.1.0: {}
 

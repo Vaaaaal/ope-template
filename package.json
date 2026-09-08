@@ -17,6 +17,7 @@
     "url": "https://github.com/Vaaaaal/ope-template/issues"
   },
   "type": "module",
+  "packageManager": "pnpm@9.6.0",
   "main": "src/index.ts",
   "module": "src/index.ts",
   "files": [
@@ -56,7 +57,7 @@
   "dependencies": {
     "@finsweet/ts-utils": "^0.40.0",
     "@googlemaps/js-api-loader": "^1.16.6",
-    "gsap": "file:gsap-bonus.tgz",
+    "gsap": "^3.15.0",
     "swiper": "^11.1.1"
   },
   "engines": {

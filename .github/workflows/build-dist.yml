@@ -1,0 +1,66 @@
+name: Build dist
+
+# Recompile `dist` et le commite sur master.
+#
+# `dist` est versionné parce qu'il est servi publiquement via jsDelivr
+# (voir README > Hébergement des bundles). Sans ce workflow, il faudrait
+# penser à lancer `pnpm build` avant chaque tag — c'est précisément l'oubli
+# qui a produit les versions 0.14.0 à 0.22.0 publiées sans sources.
+#
+# Ce build n'était pas possible tant que le projet dépendait de GSAP Business
+# via une archive hors dépôt. Depuis le rachat de GSAP par Webflow, tous les
+# plugins (dont SplitText, le seul utilisé ici) sont sur le npm public.
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'src/**'
+      - 'bin/**'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+  workflow_dispatch:
+
+# Un seul build à la fois : deux jobs concurrents pousseraient des commits
+# qui se rejetteraient mutuellement.
+concurrency:
+  group: build-dist-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm build
+
+      - name: Commit dist
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add dist
+
+          # --quiet renvoie 1 s'il y a des changements indexés.
+          if git diff --cached --quiet; then
+            echo "dist déjà à jour, rien à commiter."
+            exit 0
+          fi
+
+          git commit -m "build: recompile dist [skip ci]"
+          git push
