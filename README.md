@@ -1,115 +1,116 @@
-# Finsweet Developer Starter
+# OPE Template
 
-A starter template for both Client & Power projects.
+Les scripts et styles des sites **Opération Programmée d'Amélioration de l'Habitat**
+de Villes Vivantes, compilés en un bundle autonome par ville et chargés depuis
+Webflow.
 
-Before starting to work with this template, please take some time to read through the documentation.
+Ce dépôt est né du [Finsweet Developer Starter](https://github.com/finsweet/developer-starter)
+et en a conservé l'outillage, mais il s'en écarte sur deux points structurants :
+`dist` y est versionné, et les bundles sont servis par jsDelivr depuis GitHub
+plutôt que publiés sur npm.
 
-https://www.reddit.com/r/npm/comments/1pov7lo/how_to_publish_with_the_new_granular_tokens_and/
+## Sommaire
 
-## Reference
-
-- [Included tools](#included-tools)
-- [Requirements](#requirements)
-- [Getting started](#getting-started)
-  - [Installing](#installing)
-  - [Building](#building)
-    - [Serving files on development mode](#serving-files-on-development-mode)
-    - [Building multiple files](#building-multiple-files)
-    - [Setting up a path alias](#setting-up-a-path-alias)
+- [Outils inclus](#outils-inclus)
+- [Prérequis](#prérequis)
+- [Démarrer](#démarrer)
+  - [Installation](#installation)
+  - [Compiler](#compiler)
+    - [Servir les fichiers en développement](#servir-les-fichiers-en-développement)
+    - [Compiler plusieurs fichiers](#compiler-plusieurs-fichiers)
+    - [Compiler des fichiers CSS](#compiler-des-fichiers-css)
+    - [Définir un alias de chemin](#définir-un-alias-de-chemin)
 - [Hébergement des bundles (jsDelivr)](#hébergement-des-bundles-jsdelivr)
   - [Publier une nouvelle version](#publier-une-nouvelle-version)
   - [Build automatique de `dist`](#build-automatique-de-dist)
-- [Contributing guide](#contributing-guide)
-- [Pre-defined scripts](#pre-defined-scripts)
+- [Tests](#tests)
+- [Guide de contribution](#guide-de-contribution)
+- [Scripts disponibles](#scripts-disponibles)
 - [CI/CD](#cicd)
-  - [Continuous Integration](#continuous-integration)
-  - [Continuous Deployment](#continuous-deployment)
+  - [Intégration continue](#intégration-continue)
+  - [Déploiement continu](#déploiement-continu)
 
-## Included tools
+## Outils inclus
 
-This template contains some preconfigured development tools:
+- [TypeScript](https://www.typescriptlang.org/) : sur-couche de JavaScript qui ajoute
+  une couche de typage, pour plus de sûreté et d'efficacité.
+- [Prettier](https://prettier.io/) : formatage automatique du code.
+- [ESLint](https://eslint.org/) : analyse statique, via la
+  [configuration Finsweet](https://github.com/finsweet/eslint-config).
+- [esbuild](https://esbuild.github.io/) : compile, bundle et minifie les sources
+  TypeScript.
+- [Playwright](https://playwright.dev/) : tests end-to-end. Installé mais actuellement
+  inutilisé, voir [Tests](#tests).
+- [Changesets](https://github.com/changesets/changesets) : gestion des versions et du
+  changelog. La partie publication npm n'est plus utilisée, voir
+  [Déploiement continu](#déploiement-continu).
+- [Finsweet TypeScript Utils](https://github.com/finsweet/ts-utils) : utilitaires pour
+  le développement Webflow.
+- [GSAP](https://gsap.com/) : animations. Depuis le rachat par Webflow, tous les
+  plugins sont gratuits — ce projet utilise `ScrollTrigger`, `Flip`, `ScrollToPlugin`
+  et `SplitText`.
 
-- [Typescript](https://www.typescriptlang.org/): A superset of Javascript that adds an additional layer of Typings, bringing more security and efficiency to the written code.
-- [Prettier](https://prettier.io/): Code formatting that assures consistency across all Finsweet's projects.
-- [ESLint](https://eslint.org/): Code linting that enforces industries' best practices. It uses [our own custom configuration](https://github.com/finsweet/eslint-config) to maintain consistency across all Finsweet's projects.
-- [Playwright](https://playwright.dev/): Fast and reliable end-to-end testing.
-- [esbuild](https://esbuild.github.io/): Javascript bundler that compiles, bundles and minifies the original Typescript files.
-- [Changesets](https://github.com/changesets/changesets): A way to manage your versioning and changelogs.
-- [Finsweet's TypeScript Utils](https://github.com/finsweet/ts-utils): Some utilities to help you in your Webflow development.
+## Prérequis
 
-## Requirements
-
-This template requires the use of [pnpm](https://pnpm.js.org/en/). You can [install pnpm](https://pnpm.io/installation) with:
+Ce projet nécessite [pnpm](https://pnpm.io/) :
 
 ```bash
 npm i -g pnpm
 ```
 
-Les bundles compilés sont servis via jsDelivr — voir [Hébergement des bundles](#hébergement-des-bundles-jsdelivr).
+## Démarrer
 
-## Getting started
+### Installation
 
-The quickest way to start developing a new project is by [creating a new repository from this template](https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/creating-a-repository-from-a-template#creating-a-repository-from-a-template).
-
-Once the new repository has been created, update the `package.json` file with the correct information, specially the name of the package which has to be unique.
-
-### Installing
-
-After creating the new repository, open it in your terminal and install the packages by running:
+Clone le dépôt, puis installe les dépendances :
 
 ```bash
 pnpm install
 ```
 
-If this is the first time using Playwright and you want to use it in this project, you'll also have to install the browsers by running:
-
-```bash
-pnpm playwright install
-```
-
-You can read more about the use of Playwright in the [Testing](#testing) section.
-
-It is also recommended that you install the following extensions in your VSCode editor:
+Il est recommandé d'installer ces extensions dans VSCode :
 
 - [Prettier - Code formatter](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
 - [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
 
-### Building
+### Compiler
 
-To build the files, you have two defined scripts:
+Deux scripts sont disponibles :
 
-- `pnpm dev`: Builds and creates a local server that serves all files (check [Serving files on development mode](#serving-files-on-development-mode) for more info).
-- `pnpm build`: Builds to the production directory (`dist`).
+- `pnpm dev` : compile et lance un serveur local qui sert tous les fichiers (voir
+  [Servir les fichiers en développement](#servir-les-fichiers-en-développement)).
+- `pnpm build` : compile vers le dossier de production (`dist`).
 
-### Serving files on development mode
+### Servir les fichiers en développement
 
-When you run `pnpm dev`, two things happen:
+`pnpm dev` fait deux choses :
 
-- esbuild is set to `watch` mode. Every time that you save your files, the project will be rebuilt.
-- A local server is created under `http://localhost:3000` that serves all your project files. You can import them in your Webflow projects like:
+- esbuild passe en mode `watch` : le projet est recompilé à chaque sauvegarde.
+- Un serveur local démarre sur `http://localhost:3000` et sert tous les fichiers du
+  projet. Tu peux les charger dans Webflow ainsi :
 
 ```html
-<script defer src="http://localhost:3000/{FILE_PATH}.js"></script>
+<script defer src="http://localhost:3000/{CHEMIN_DU_FICHIER}.js"></script>
 ```
 
-- Live Reloading is enabled by default, meaning that every time you save a change in your files, the website you're working on will reload automatically. You can disable it in `/bin/build.js`.
+Le rechargement à chaud est actif par défaut : le site sur lequel tu travailles se
+recharge à chaque sauvegarde. Tu peux le désactiver dans `bin/build.js`.
 
-### Building multiple files
+### Compiler plusieurs fichiers
 
-If you need to build multiple files into different outputs, you can do it by updating the build settings.
-
-In `bin/build.js`, update the `ENTRY_POINTS` array with any files you'd like to build:
+Pour produire plusieurs sorties, modifie le tableau `ENTRY_POINTS` dans
+[`bin/build.js`](bin/build.js) :
 
 ```javascript
 const ENTRY_POINTS = [
-  'src/home/index.ts',
-  'src/contact/whatever.ts',
-  'src/hooyah.ts',
-  'src/home/other.ts',
+  'src/plombieres/index.ts',
+  'src/aurillac/index.ts',
+  'src/ruffec/index.ts',
 ];
 ```
 
-This will tell `esbuild` to build all those files and output them in the `dist` folder for production and in `http://localhost:3000` for development.
+esbuild compile chacun de ces fichiers vers `dist` en production, et vers
+`http://localhost:3000` en développement.
 
 > [!TIP]
 > **Ajouter une ville** : copie [`src/template.ts`](src/template.ts) dans
@@ -120,37 +121,41 @@ This will tell `esbuild` to build all those files and output them in the `dist` 
 > pas un bundle à publier. Il l'a été par le passé et poussait 242 Ko inutiles
 > sur le CDN, pour un contenu identique à celui de Plombières.
 
-### Building CSS files
+### Compiler des fichiers CSS
 
-CSS files are also supported by the bundler. When including a CSS file as an entry point, the compiler will generate a minified version in your output folder.
+Le bundler gère aussi le CSS : un fichier déclaré comme point d'entrée est minifié
+dans le dossier de sortie.
 
-You can define a CSS entry point by either:
+Tu peux déclarer un point d'entrée CSS de deux façons :
 
-- Manually defining it in the `bin/build.js` config. [See previous section](#building-multiple-files) for reference.
-- Or importing the file inside any of your JavaScript / TypeScript files:
+- en l'ajoutant manuellement à `bin/build.js` (voir
+  [section précédente](#compiler-plusieurs-fichiers)) ;
+- ou en l'important depuis un fichier JavaScript / TypeScript :
 
 ```typescript
-// src/index.ts
-import './index.css';
+// src/plombieres/index.ts
+import './plombieres.css';
 ```
 
-CSS outputs are also available in `localhost` during [development mode](#serving-files-on-development-mode).
+Les sorties CSS sont également servies sur `localhost` en
+[mode développement](#servir-les-fichiers-en-développement).
 
-### Setting up a path alias
+### Définir un alias de chemin
 
-Path aliases are very helpful to avoid code like:
+Les alias évitent ce genre d'import :
 
 ```typescript
 import example from '../../../../utils/example';
 ```
 
-Instead, we can create path aliases that map to a specific folder, so the code becomes cleaner like:
+Au profit de :
 
 ```typescript
 import example from '$utils/example';
 ```
 
-You can set up path aliases using the `paths` setting in `tsconfig.json`. This template has an already predefined path as an example:
+Ils se configurent via `paths` dans [`tsconfig.json`](tsconfig.json). Un alias est
+déjà défini :
 
 ```json
 {
@@ -160,27 +165,28 @@ You can set up path aliases using the `paths` setting in `tsconfig.json`. This t
 }
 ```
 
-To avoid any surprises, take some time to familiarize yourself with the [tsconfig](/tsconfig.json) enabled flags.
+Prends le temps de parcourir les options activées dans le [tsconfig](tsconfig.json)
+pour éviter les surprises.
 
 ## Hébergement des bundles (jsDelivr)
 
 Les bundles compilés ne sont **pas** consommés comme une dépendance npm : ce dépôt
-n'est pas une librairie (il n'exporte rien, `main` ne pointe vers aucun module
-importable). Chaque fichier de `dist` est un script autonome, chargé par une balise
-`<script>` dans le custom code Webflow.
+n'est pas une librairie (il n'exporte rien et n'a pas de point d'entrée importable).
+Chaque fichier de `dist` est un script autonome, chargé par une balise `<script>`
+dans le custom code Webflow.
 
 Ils sont donc servis directement depuis GitHub via **jsDelivr**, qui expose
 n'importe quel dépôt public sous `/gh/{owner}/{repo}@{ref}/{chemin}` :
 
 ```html
-<script defer src="https://cdn.jsdelivr.net/gh/Vaaaaal/ope-template@v0.22.0/dist/plombieres/index.js"></script>
+<script defer src="https://cdn.jsdelivr.net/gh/Vaaaaal/ope-template@v0.24.0/dist/plombieres/index.js"></script>
 ```
 
 C'est pour cette raison que le dossier `dist` est **versionné dans git** (contrairement
 au starter Finsweet d'origine) : sans lui, jsDelivr n'aurait rien à servir.
 
 > [!IMPORTANT]
-> Cible toujours un **tag** (`@v0.22.0`), jamais une branche. Une URL taguée est
+> Cible toujours un **tag** (`@v0.24.0`), jamais une branche. Une URL taguée est
 > immuable et mise en cache indéfiniment par jsDelivr. Une URL de branche est
 > recachée toutes les 12 h : une correction peut mettre une demi-journée à
 > apparaître, et un site en production peut changer de comportement sans
@@ -200,6 +206,13 @@ renverraient alors 404). Pour tester avant de taguer, vise un commit précis :
 pnpm urls --ref 3aff4b8
 ```
 
+Chaque bundle affiche sa version dans la console du navigateur — pratique pour
+vérifier qu'un site charge bien la version attendue :
+
+```
+Bundle ope-template v0.24.0
+```
+
 ### Publier une nouvelle version
 
 `dist` est recompilé par la CI (voir la section suivante). Une release consiste
@@ -208,8 +221,8 @@ donc à pousser, laisser la CI committer `dist`, puis taguer :
 ```bash
 git push origin master          # la CI recompile et commite dist
 git pull                        # récupère le commit "build: recompile dist"
-git tag v0.23.0                 # le tag fige les URLs jsDelivr
-git push origin v0.23.0         # sans ça, jsDelivr renvoie 404
+git tag v0.25.0                 # le tag fige les URLs jsDelivr
+git push origin v0.25.0         # sans ça, jsDelivr renvoie 404
 pnpm urls                       # les balises à coller dans Webflow
 ```
 
@@ -235,9 +248,7 @@ le workflow ait poussé son commit** avant de créer le tag, sinon celui-ci fige
 > Webflow, tous les plugins sont gratuits et publiés sur le npm public — dont
 > `SplitText`, le seul plugin premium que ce projet utilisait.
 
-## Testing
-
-As previously mentioned, this library has [Playwright](https://playwright.dev/) included as an automated testing tool.
+## Tests
 
 > [!NOTE]
 > **Ce projet n'a aucun test pour l'instant.** La spec de démo du starter, qui
@@ -245,55 +256,62 @@ As previously mentioned, this library has [Playwright](https://playwright.dev/) 
 > de ce code et échouait dès que ce site externe changeait. Le job `Tests` est
 > commenté dans [`ci.yml`](.github/workflows/ci.yml).
 
-Playwright reste installé. Pour remettre des tests en place : écris tes specs dans
-`/tests`, décommente le job `Tests` dans `ci.yml`, et remonte `@playwright/test`
-— la version épinglée (1.42.1) ne s'installe plus sur les runners Ubuntu 24.04.
+Playwright reste installé. Pour remettre des tests en place :
 
-By default, Playwright will also run `pnpm dev` in the background while the tests are running, so [your files served](#serving-files-on-development-mode) under `localhost:3000` will run as usual.
-You can disable this behavior in the `playwright.config.ts` file.
+1. écris tes specs dans `/tests` ;
+2. remonte `@playwright/test` — la version épinglée (1.42.1) ne s'installe plus sur
+   les runners Ubuntu 24.04 ;
+3. installe les navigateurs avec `pnpm playwright install` ;
+4. décommente le job `Tests` dans `ci.yml`.
 
-## Contributing guide
+Par défaut, Playwright lance aussi `pnpm dev` en arrière-plan pendant les tests, afin
+que [les fichiers servis](#servir-les-fichiers-en-développement) sur `localhost:3000`
+soient disponibles. Ce comportement se désactive dans
+[`playwright.config.ts`](playwright.config.ts).
 
-In general, your development workflow should look like this:
+## Guide de contribution
 
-1. Create a new branch where to develop a new feature or bug fix.
-2. Once you've finished the implementation, [create a Changeset](#continuous-deployment) (or multiple) explaining the changes that you've made in the codebase.
-3. Open a Pull Request and wait until the [CI workflows](#continuous-integration) finish. If something fails, please try to fix it before merging the PR.
-   If you don't want to wait for the CI workflows to run on GitHub to know if something fails, it will be always faster to run them in your machine before opening a PR.
-4. Merge the Pull Request. Le workflow `build-dist.yml` recompile et commite `dist`, puis tu crées le tag qui fige les URLs jsDelivr — voir [Publier une nouvelle version](#publier-une-nouvelle-version).
+Le déroulé habituel :
 
-If you need to work on several features before publishing a new version on npm, it is a good practise to create a `development` branch where to merge all the PR's before pushing your code to master.
+1. Crée une branche pour la fonctionnalité ou le correctif.
+2. Ouvre une Pull Request et attends la fin des
+   [workflows CI](#intégration-continue). Si quelque chose échoue, corrige avant de
+   fusionner — lancer `pnpm lint` et `pnpm check` en local est toujours plus rapide
+   que d'attendre GitHub.
+3. Fusionne la Pull Request. Le workflow `build-dist.yml` recompile et commite `dist`,
+   puis tu crées le tag qui fige les URLs jsDelivr — voir
+   [Publier une nouvelle version](#publier-une-nouvelle-version).
 
-## Pre-defined scripts
+## Scripts disponibles
 
-This template contains a set of predefined scripts in the `package.json` file:
-
-- `pnpm dev`: Builds and creates a local server that serves all files (check [Serving files on development mode](#serving-files-on-development-mode) for more info).
-- `pnpm build`: Builds to the production directory (`dist`).
-- `pnpm urls`: Affiche les URLs jsDelivr et les balises `<script>` / `<link>` de la version courante, prêtes à coller dans Webflow (voir [Hébergement des bundles](#hébergement-des-bundles-jsdelivr)).
-- `pnpm lint`: Scans the codebase with ESLint and Prettier to see if there are any errors.
-- `pnpm lint:fix`: Fixes all auto-fixable issues in ESLint.
-- `pnpm check`: Checks for TypeScript errors in the codebase.
-- `pnpm format`: Formats all the files in the codebase using Prettier. You probably won't need this script if you have automatic [formatting on save](https://www.digitalocean.com/community/tutorials/code-formatting-with-prettier-in-visual-studio-code#automatically-format-on-save) active in your editor.
-- `pnpm test`: Will run all the tests that are located in the `/tests` folder.
-- `pnpm test:headed`: Will run all the tests that are located in the `/tests` folder visually in headed browsers.
-- `pnpm run update`: Scans the dependencies of the project and provides an interactive UI to select the ones that you want to update.
+- `pnpm dev` : compile et lance le serveur local (voir
+  [Servir les fichiers en développement](#servir-les-fichiers-en-développement)).
+- `pnpm build` : compile vers `dist`.
+- `pnpm urls` : affiche les URLs jsDelivr et les balises `<script>` / `<link>` de la
+  version courante, prêtes à coller dans Webflow (voir
+  [Hébergement des bundles](#hébergement-des-bundles-jsdelivr)).
+- `pnpm lint` : analyse le code avec ESLint et vérifie le formatage avec Prettier.
+- `pnpm lint:fix` : corrige automatiquement ce qui peut l'être.
+- `pnpm check` : vérifie les erreurs TypeScript.
+- `pnpm format` : formate tout le code avec Prettier. Inutile si ton éditeur formate
+  déjà à la sauvegarde.
+- `pnpm test` : lance les tests du dossier `/tests` (voir [Tests](#tests)).
+- `pnpm test:ui` : lance les tests dans l'interface graphique de Playwright.
+- `pnpm update` : passe en revue les dépendances et propose de les mettre à jour.
 
 ## CI/CD
 
-This template contains a set of helpers with proper CI/CD workflows.
+### Intégration continue
 
-### Continuous Integration
+À l'ouverture d'une Pull Request, un workflow d'intégration continue analyse et
+vérifie le code, via `pnpm lint` et `pnpm check`.
 
-When you open a Pull Request, a Continuous Integration workflow will run to:
+Si le job échoue, un avertissement apparaît sur la Pull Request et il faut corriger
+avant de fusionner.
 
-- Lint & check your code. It uses the `pnpm lint` and `pnpm check` commands under the hood.
+Le job `Tests` est désactivé — voir [Tests](#tests).
 
-If this job fails, you will get a warning in your Pull Request and should try to fix your code accordingly.
-
-Le job `Tests` est désactivé — voir [Testing](#testing).
-
-### Continuous Deployment
+### Déploiement continu
 
 Ce dépôt **ne publie plus sur npm**. Les bundles sont servis depuis GitHub via
 jsDelivr — voir [Hébergement des bundles](#hébergement-des-bundles-jsdelivr) pour
