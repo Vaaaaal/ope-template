@@ -1,9 +1,13 @@
 import * as esbuild from 'esbuild';
-import { readdirSync } from 'fs';
+import { readdirSync, readFileSync } from 'fs';
 import { join, sep } from 'path';
 
 // Config output
 const BUILD_DIRECTORY = 'dist';
+
+// Injectée dans les bundles pour pouvoir lire, depuis la console d'un site
+// Webflow, quelle version il charge réellement.
+const BUILD_VERSION = JSON.parse(readFileSync('package.json', 'utf8')).version;
 const PRODUCTION = process.env.NODE_ENV === 'production';
 
 // Config entrypoint files
@@ -43,6 +47,7 @@ const context = await esbuild.context({
   inject: LIVE_RELOAD ? ['./bin/live-reload.js'] : undefined,
   define: {
     SERVE_ORIGIN: JSON.stringify(SERVE_ORIGIN),
+    __BUILD_VERSION__: JSON.stringify(BUILD_VERSION),
   },
 });
 
