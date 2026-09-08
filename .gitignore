@@ -25,7 +25,8 @@ typings/
 .env
 
 # Production files
-dist
+# NOTE: `dist` est volontairement versionné — il est servi publiquement via
+# jsDelivr (https://cdn.jsdelivr.net/gh/...). Voir README > Hébergement des bundles.
 
 # npm credentials — ne jamais versionner
 .npmrc

@@ -16,6 +16,9 @@ https://www.reddit.com/r/npm/comments/1pov7lo/how_to_publish_with_the_new_granul
     - [Serving files on development mode](#serving-files-on-development-mode)
     - [Building multiple files](#building-multiple-files)
     - [Setting up a path alias](#setting-up-a-path-alias)
+- [Hébergement des bundles (jsDelivr)](#hébergement-des-bundles-jsdelivr)
+  - [Publier une nouvelle version](#publier-une-nouvelle-version)
+  - [Pourquoi pas de build en CI](#pourquoi-pas-de-build-en-ci)
 - [Contributing guide](#contributing-guide)
 - [Pre-defined scripts](#pre-defined-scripts)
 - [CI/CD](#cicd)
@@ -159,6 +162,74 @@ You can set up path aliases using the `paths` setting in `tsconfig.json`. This t
 
 To avoid any surprises, take some time to familiarize yourself with the [tsconfig](/tsconfig.json) enabled flags.
 
+## Hébergement des bundles (jsDelivr)
+
+Les bundles compilés ne sont **pas** consommés comme une dépendance npm : ce dépôt
+n'est pas une librairie (il n'exporte rien, `main` ne pointe vers aucun module
+importable). Chaque fichier de `dist` est un script autonome, chargé par une balise
+`<script>` dans le custom code Webflow.
+
+Ils sont donc servis directement depuis GitHub via **jsDelivr**, qui expose
+n'importe quel dépôt public sous `/gh/{owner}/{repo}@{ref}/{chemin}` :
+
+```html
+<script defer src="https://cdn.jsdelivr.net/gh/Vaaaaal/ope-template@v0.22.0/dist/plombieres/index.js"></script>
+```
+
+C'est pour cette raison que le dossier `dist` est **versionné dans git** (contrairement
+au starter Finsweet d'origine) : sans lui, jsDelivr n'aurait rien à servir.
+
+> [!IMPORTANT]
+> Cible toujours un **tag** (`@v0.22.0`), jamais une branche. Une URL taguée est
+> immuable et mise en cache indéfiniment par jsDelivr. Une URL de branche est
+> recachée toutes les 12 h : une correction peut mettre une demi-journée à
+> apparaître, et un site en production peut changer de comportement sans
+> qu'aucun déploiement n'ait eu lieu.
+
+Pour obtenir les URLs de tous les fichiers de la version courante :
+
+```bash
+pnpm urls
+```
+
+Le script affiche, pour chaque fichier de `dist`, la balise prête à coller dans
+Webflow. Il avertit si le tag correspondant n'existe pas encore (les URLs
+renverraient alors 404). Pour tester avant de taguer, vise un commit précis :
+
+```bash
+pnpm urls --ref 3aff4b8
+```
+
+### Publier une nouvelle version
+
+Le build tourne **en local** (voir la section suivante). `dist` étant versionné,
+il doit être recompilé et commité avant chaque tag :
+
+```bash
+pnpm build                      # régénère dist
+git add -A && git commit -m "build: v0.23.0"
+git tag v0.23.0                 # le tag fige les URLs jsDelivr
+git push origin master --tags   # sans --tags, jsDelivr renvoie 404
+pnpm urls                       # les balises à coller dans Webflow
+```
+
+Il n'y a pas de purge à faire côté jsDelivr : chaque version ayant sa propre URL,
+un nouveau tag n'invalide jamais l'ancienne. Les sites déjà en ligne continuent de
+pointer vers leur version, et sont migrés un par un en changeant leur balise.
+
+### Pourquoi pas de build en CI
+
+Ce projet dépend de **GSAP Business** via `"gsap": "file:gsap-bonus.tgz"`. Cette
+archive est sous licence payante et volontairement exclue du dépôt
+([voir Installing](#installing)). Un runner GitHub Actions ne peut donc pas
+exécuter `pnpm install`, et par conséquent pas `pnpm build`.
+
+Automatiser le build en CI supposerait au préalable de passer par le registre privé
+GreenSock (`https://npm.greensock.com`) avec un token en secret de dépôt. Tant que
+ce n'est pas fait, **le build est manuel et local** — d'où l'importance de la
+vérification `bin/check-clean.js`, qui empêche de publier depuis un répertoire de
+travail non commité.
+
 ## Testing
 
 As previously mentioned, this library has [Playwright](https://playwright.dev/) included as an automated testing tool.
@@ -192,6 +263,7 @@ This template contains a set of predefined scripts in the `package.json` file:
 
 - `pnpm dev`: Builds and creates a local server that serves all files (check [Serving files on development mode](#serving-files-on-development-mode) for more info).
 - `pnpm build`: Builds to the production directory (`dist`).
+- `pnpm urls`: Affiche les URLs jsDelivr et les balises `<script>` / `<link>` de la version courante, prêtes à coller dans Webflow (voir [Hébergement des bundles](#hébergement-des-bundles-jsdelivr)).
 - `pnpm lint`: Scans the codebase with ESLint and Prettier to see if there are any errors.
 - `pnpm lint:fix`: Fixes all auto-fixable issues in ESLint.
 - `pnpm check`: Checks for TypeScript errors in the codebase.
